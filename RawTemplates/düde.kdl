@@ -1,0 +1,50 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type düde : "düde" {
+    template {
+        DWRD AIType;
+        DWRD Govt;
+        HWRD Flags;
+        DWRD InfoTypes;
+        DWRD ShipType1;
+        DWRD ShipType2;
+        DWRD ShipType3;
+        DWRD ShipType4;
+        DWRD ShipType5;
+        DWRD ShipType6;
+        DWRD ShipType7;
+        DWRD ShipType8;
+        DWRD ShipType9;
+        DWRD ShipType10;
+        DWRD ShipType11;
+        DWRD ShipType12;
+        DWRD ShipType13;
+        DWRD ShipType14;
+        DWRD ShipType15;
+        DWRD ShipType16;
+        DWRD Probability1;
+        DWRD Probability2;
+        DWRD Probability3;
+        DWRD Probability4;
+        DWRD Probability5;
+        DWRD Probability6;
+        DWRD Probability7;
+        DWRD Probability8;
+        DWRD Probability9;
+        DWRD Prob10;
+        DWRD Prob11;
+        DWRD Prob12;
+        DWRD Prob13;
+        DWRD Prob14;
+        DWRD Prob15;
+        DWRD Prob16;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+    };
+};

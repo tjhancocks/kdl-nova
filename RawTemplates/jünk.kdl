@@ -1,0 +1,29 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type jünk : "jünk" {
+    template {
+        DWRD SoldAt1;
+        DWRD SoldAt2;
+        DWRD SoldAt3;
+        DWRD SoldAt4;
+        DWRD SoldAt5;
+        DWRD SoldAt6;
+        DWRD SoldAt7;
+        DWRD SoldAt8;
+        DWRD BoughtAt1;
+        DWRD BoughtAt2;
+        DWRD BoughtAt3;
+        DWRD BoughtAt4;
+        DWRD BoughtAt5;
+        DWRD BoughtAt6;
+        DWRD BoughtAt7;
+        DWRD BoughtAt8;
+        DWRD BasePrice;
+        HWRD Flags;
+        HWRD ScanMask;
+        C040 LCName;
+        C040 Abbrev;
+        C0FF BuyOn;
+        C0FF SellOn;
+    };
+};

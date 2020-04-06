@@ -1,0 +1,9 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type bööm : "bööm" {
+    template {
+        DWRD FrameAdvance;
+        DWRD SoundIndex;
+        DWRD GraphicIndex;
+    };
+};

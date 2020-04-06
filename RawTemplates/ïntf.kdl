@@ -1,0 +1,26 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type ïntf : "ïntf" {
+    template {
+        HLNG BrightText;
+        HLNG DimText;
+        RECT RadarArea;
+        HLNG BrightRadar;
+        HLNG DimRadar;
+        RECT ShieldArea;
+        HLNG ShieldColor;
+        RECT ArmorArea;
+        HLNG ArmorColor;
+        RECT FuelArea;
+        HLNG FuelFull;
+        HLNG FuelPartial;
+        RECT NavArea;
+        RECT WeapArea;
+        RECT TargArea;
+        RECT CargoArea;
+        C040 StatusFont;
+        DWRD StatFontSize;
+        DWRD SubtitleSize;
+        DWRD StatusBkgnd;
+    };
+};

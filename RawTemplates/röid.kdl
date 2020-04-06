@@ -1,0 +1,25 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type röid : "röid" {
+    template {
+        DWRD Strength;
+        DWRD SpinRate;
+        DWRD YieldType;
+        DWRD YieldQty;
+        DWRD PartCount;
+        HLNG PartColor;
+        DWRD FragType1;
+        DWRD FragType2;
+        DWRD FragCount;
+        DWRD ExplodeType;
+        DWRD Mass;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+    };
+};

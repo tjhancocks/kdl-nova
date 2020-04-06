@@ -1,0 +1,45 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type chär : "chär" {
+    template {
+        DLNG Cash;
+        DWRD ShipType;
+        DWRD System1;
+        DWRD System2;
+        DWRD System3;
+        DWRD System4;
+        DWRD Govt1;
+        DWRD Govt2;
+        DWRD Govt3;
+        DWRD Govt4;
+        DWRD Status1;
+        DWRD Status2;
+        DWRD Status3;
+        DWRD Status4;
+        DWRD Kills;
+        DWRD IntroPict1;
+        DWRD IntroPict2;
+        DWRD IntroPict3;
+        DWRD IntroPict4;
+        DWRD PictDelay1;
+        DWRD PictDelay2;
+        DWRD PictDelay3;
+        DWRD PictDelay4;
+        DWRD IntroTextID;
+        C100 OnStart;
+        HWRD Flags;
+        DWRD StartDay;
+        DWRD StartMonth;
+        DWRD StartYear;
+        C010 DatePrefix;
+        C010 DateSuffix;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+    };
+};

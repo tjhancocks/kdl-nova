@@ -1,0 +1,23 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type flët : "flët" {
+    template {
+        DWRD LeadShipType;
+        RECT EscortType;
+        RECT Min;
+        RECT Max;
+        DWRD Govt;
+        DWRD LinkSyst;
+        C100 ActivateOn;
+        DWRD Quote;
+        HWRD Flags;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+    };
+};

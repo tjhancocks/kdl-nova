@@ -1,0 +1,42 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type oütf : "oütf" {
+    template {
+        DWRD DispWeight;
+        DWRD Mass;
+        DWRD TechLevel;
+        DWRD ModType;
+        DWRD ModVal;
+        DWRD Max;
+        HWRD Flags;
+        DLNG Cost;
+        DWRD ModType2;
+        DWRD ModVal2;
+        DWRD ModType3;
+        DWRD ModVal3;
+        DWRD ModType4;
+        DWRD ModVal4;
+        HLNG Contributes;
+        HLNG Contributes;
+        HLNG Requires;
+        HLNG Requires;
+        C0FF Availability;
+        C0FF OnPurchase;
+        C0FF OnSell;
+        C040 ShortName;
+        C040 LCName;
+        C041 LCPlural;
+        DWRD ItemClass;
+        HWRD ScanMask;
+        DWRD BuyRandom;
+        DWRD RequireGovt;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+    };
+};

@@ -1,0 +1,33 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type crön : "crön" {
+    template {
+        DWRD FirstDay;
+        DWRD FirstMonth;
+        DWRD FirstYear;
+        DWRD LastDay;
+        DWRD LastMonth;
+        DWRD LastYear;
+        DWRD Random;
+        DWRD Duration;
+        DWRD PreHoldoff;
+        DWRD PostHoldoff;
+        DWRD IndNewsStr;
+        HWRD Flags;
+        C0FF EnableOn;
+        C0FF OnStart;
+        C100 OnEnd;
+        HLNG Contrib;
+        HLNG Contrib;
+        HLNG Require;
+        HLNG Require;
+        DWRD NewsGovt1;
+        DWRD NewsGovt2;
+        DWRD NewsGovt3;
+        DWRD NewsGovt4;
+        DWRD GovtNewsStr1;
+        DWRD GovtNewsStr2;
+        DWRD GovtNewsStr3;
+        DWRD GovtNewsStr4;
+    };
+};

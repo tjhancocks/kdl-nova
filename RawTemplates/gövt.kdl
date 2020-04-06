@@ -1,0 +1,53 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type gövt : "gövt" {
+    template {
+        DWRD VoiceType;
+        HWRD Flags;
+        HWRD Flags2;
+        DWRD ScanFine;
+        DWRD CrimeTol;
+        DWRD SmugPenalty;
+        DWRD DisabPenalty;
+        DWRD BoardPenalty;
+        DWRD KillPenalty;
+        DWRD ShootPenalty;
+        DWRD InitialRec;
+        DWRD MaxOdds;
+        DWRD Class1;
+        DWRD Class2;
+        DWRD Class3;
+        DWRD Class4;
+        DWRD Ally1;
+        DWRD Ally2;
+        DWRD Ally3;
+        DWRD Ally4;
+        DWRD Enemy1;
+        DWRD Enemy2;
+        DWRD Enemy3;
+        DWRD Enemy4;
+        DWRD SkillMult;
+        HWRD ScanMask;
+        C010 CommName;
+        C010 TargetCode;
+        HLNG Require;
+        HLNG Require;
+        DWRD InhJam1;
+        DWRD InhJam2;
+        DWRD InhJam3;
+        DWRD InhJam4;
+        C040 MediumName;
+        HLNG Color;
+        HLNG ShipColor;
+        DWRD Interface;
+        DWRD NewsPict;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+    };
+};

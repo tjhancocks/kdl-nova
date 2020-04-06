@@ -1,0 +1,10 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type dësc : "dësc" {
+    template {
+        CSTR Description;
+        DWRD Graphic;
+        C020 Movie;
+        HWRD Flags;
+    };
+};

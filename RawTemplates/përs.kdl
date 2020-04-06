@@ -1,0 +1,37 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type përs : "përs" {
+    template {
+        DWRD LinkSyst;
+        DWRD Govt;
+        DWRD AIType;
+        DWRD Aggress;
+        DWRD Coward;
+        DWRD ShipType;
+        RECT WeapType;
+        RECT WeapCount;
+        RECT AmmoLoad;
+        DLNG Credits;
+        DWRD ShieldMod;
+        DWRD HailPict;
+        DWRD CommQuote;
+        DWRD HailQuote;
+        DWRD LinkMission;
+        HWRD Flags;
+        C100 ActivateOn;
+        DWRD GrantClass;
+        DWRD GrantCount;
+        DWRD GrantProb;
+        C040 Subtitle;
+        HLNG Color;
+        HWRD Flags2;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+    };
+};

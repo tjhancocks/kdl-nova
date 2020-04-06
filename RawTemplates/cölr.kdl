@@ -1,0 +1,48 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type cölr : "cölr" {
+    template {
+        HLNG ButtonUp;
+        HLNG ButtonDown;
+        HLNG ButtonGrey;
+        C040 MenuFont;
+        DWRD MenuFontSize;
+        HLNG MenuColor1;
+        HLNG MenuColor2;
+        HLNG GridBright;
+        HLNG GridDim;
+        RECT ProgressBar;
+        HLNG ProgBright;
+        HLNG ProgDim;
+        HLNG ProgOutline;
+        DWRD MenuButton1x;
+        DWRD MenuButton1y;
+        DWRD MenuButton2x;
+        DWRD MenuButton2y;
+        DWRD MenuButton3x;
+        DWRD MenuButton3y;
+        DWRD MenuButton4x;
+        DWRD MenuButton4y;
+        DWRD MenuButton5x;
+        DWRD MenuButton5y;
+        DWRD MenuButton6x;
+        DWRD MenuButton6y;
+        HLNG FloatingMap;
+        HLNG ListText;
+        HLNG ListBkgnd;
+        HLNG ListHilite;
+        HLNG EscortHilite;
+        C040 ButtonFont;
+        DWRD ButtonFontSz;
+        DWRD LogoX;
+        DWRD LogoY;
+        DWRD RolloverX;
+        DWRD RolloverY;
+        DWRD Slide1X;
+        DWRD Slide1Y;
+        DWRD Slide2X;
+        DWRD Slide2Y;
+        DWRD Slide3X;
+        DWRD Slide3Y;
+    };
+};

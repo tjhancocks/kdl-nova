@@ -1,0 +1,56 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type spöb : "spöb" {
+    template {
+        DWRD xPos;
+        DWRD yPos;
+        DWRD Type;
+        HLNG Flags;
+        DWRD Tribute;
+        DWRD TechLevel;
+        DWRD SpecialTech1;
+        DWRD SpecialTech2;
+        DWRD SpecialTech3;
+        DWRD Govt;
+        DWRD MinCoolness;
+        DWRD CustPicID;
+        DWRD CustSndID;
+        DWRD DefDude;
+        DWRD DefCount;
+        HWRD Flags2;
+        DWRD AnimDelay;
+        DWRD Frame0Bias;
+        DWRD HyperLink1;
+        DWRD HyperLink2;
+        DWRD HyperLink3;
+        DWRD HyperLink4;
+        DWRD HyperLink5;
+        DWRD HyperLink6;
+        DWRD HyperLink7;
+        DWRD HyperLink8;
+        C0FF OnDominate;
+        C0FF OnRelease;
+        DLNG Fee;
+        DWRD Gravity;
+        DWRD Weapon;
+        DLNG Strength;
+        DWRD DeadType;
+        DWRD DeadTime;
+        DWRD ExplodType;
+        C0FF OnDestroy;
+        C0FF OnRegen;
+        DWRD SpecialTech4;
+        DWRD SpecialTech5;
+        DWRD SpecialTech6;
+        DWRD SpecialTech7;
+        DWRD SpecialTech8;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+    };
+};

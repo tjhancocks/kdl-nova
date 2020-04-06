@@ -1,0 +1,16 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type ränk : "ränk" {
+    template {
+        DWRD Weight;
+        DWRD Govt;
+        DWRD PriceMod;
+        DLNG Salary;
+        DLNG SalaryCap;
+        HLNG Contrib;
+        HLNG Contrib;
+        HWRD Flags;
+        C040 ConvName;
+        C040 ShortName;
+    };
+};

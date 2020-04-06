@@ -1,0 +1,12 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type spïn : "spïn" {
+    template {
+        DWRD SpritesID;
+        DWRD MasksID;
+        DWRD xSize;
+        DWRD ySize;
+        DWRD xTiles;
+        DWRD yTiles;
+    };
+};

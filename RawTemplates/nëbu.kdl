@@ -1,0 +1,20 @@
+` Type Definition and Template generated from TMPL resource via KDL.
+
+@type nëbu : "nëbu" {
+    template {
+        DWRD XPos;
+        DWRD YPos;
+        DWRD XSize;
+        DWRD YSize;
+        C0FF ActiveOn;
+        C0FF OnExplore;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+        DWRD Unused;
+    };
+};
