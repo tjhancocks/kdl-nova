@@ -21,3 +21,4 @@
 @import "@rpath/Types/Explosion.kdl";
 @import "@rpath/Types/PlayerCharacterTemplate.kdl";
 @import "@rpath/Types/Description.kdl";
+@import "@rpath/Types/Disaster.kdl";
