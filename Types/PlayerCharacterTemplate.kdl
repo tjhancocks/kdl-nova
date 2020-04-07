@@ -1,0 +1,162 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+` 
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+` 
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+` 
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` The PlayerCharacterTemplate (chär) resource is used to allow multiple entry
+` points into the scenario's storyline, by letting the player pick a "character
+` template" from a list when a new pilot is started. The player is presented
+` with a list of all available PlayerCharacterTemplate's (chär) resources when
+` a new pilot is created, and must choose one (but only one). This allows
+` different character types to have different ships, legal records, etc. at the
+` start of the game, and also allows for the setting-up of mission stuff by way
+` of a control bit set string that is evaluated when a new pilot is started.
+@type PlayerCharacterTemplate : "chär" {
+    template {
+        DLNG Cash;
+        DWRD ShipType;
+        DWRD System1;
+        DWRD System2;
+        DWRD System3;
+        DWRD System4;
+        DWRD Govt1;
+        DWRD Govt2;
+        DWRD Govt3;
+        DWRD Govt4;
+        DWRD Status1;
+        DWRD Status2;
+        DWRD Status3;
+        DWRD Status4;
+        DWRD Kills;
+        DWRD IntroPict1;
+        DWRD IntroPict2;
+        DWRD IntroPict3;
+        DWRD IntroPict4;
+        DWRD PictDelay1;
+        DWRD PictDelay2;
+        DWRD PictDelay3;
+        DWRD PictDelay4;
+        DWRD IntroTextID;
+        C100 OnStart;
+        HWRD Flags;
+        DWRD StartDay;
+        DWRD StartMonth;
+        DWRD StartYear;
+        C010 DatePrefix;
+        C010 DateSuffix;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+    };
+
+    ` The amount of money a player gets when starting out with this character
+    ` type.
+    field("Cash") {
+        Cash;
+    };
+
+    ` ID number of the starting ship type.
+    field("Ship") {
+        ShipType as Ship&;
+    };
+
+    ` ID numbers of up to four possible starting systems for the player. The
+    ` player will randomly be placed in one of these systems when starting out.
+    ` Set to -1 if unused (if all four of these fields are set to -1, the player
+    ` will be placed in system ID 128 as a default).
+    field("System") {
+        System1 as System& = #-1;
+        System2 as System& = #-1;
+        System3 as System& = #-1;
+        System4 as System4 = #-1;
+    };
+
+    ` For each of the governments whose ID is entered in a Govt1-4 field, the
+    ` player's legal status in systems owned by that government or one of its
+    ` allies is set to the value in the corresponding Status field. For systems
+    ` owned by an enemy of the govt identified in the Govt field, the player's
+    ` legal status is set to the negative value of the number in the
+    ` corresponding Status field. Set unused Govt fields to -1.
+    field("GovernmentStatus") repeatable<1, 4> {
+        Govt<$FieldNumber> as Government& = #-1;
+        Status<$FieldNumber> = 0;
+    };
+
+    ` The player's starting combat rating.
+    field("Kills") {
+        Kills;
+    };
+
+    ` IDs of up to four PICT resources to show in sequence when the player
+    ` starts out with a new pilot of this type. Set to -1 if unused.
+    ` Maximum delay time to display each of the four above pictures, in seconds.
+    field("AddIntroSequenceFrame") repeatable<1, 4> {
+        IntroPict<$FieldNumber> as Image<MacintoshPicture>& = #-1;
+        PictDelay<$FieldNumber> = 5;
+    };
+
+    ` The ID of the dësc resource to show when the player starts out with a new
+    ` pilot of this type. Along with the IntroPictID field, this allow you to
+    ` have different opening sequences for each pilot type (useful to show
+    ` different sides of the same issue, for example). Using the dësc resource's
+    ` MovieFile field here lets you have an introduction movie. The intro text
+    ` (and any associated movie) is displayed after the above PICT resources are
+    ` shown.
+    field("IntroductionText") {
+        IntroTextID as Description& = #-1;
+    };
+
+    ` A control bit set string that is called when the player starts out with a
+    ` new pilot of this type.
+    field("OnStart") {
+        OnStart = "";
+    };
+
+    ` Flags relating the the character's behaviour in the engine.
+    field("Flags") {
+        Flags as Bitmask = 0 [
+            ` Denotes the "default" chär resource, which will be automatically
+            ` selected in the popup menu. If more than one chär resource has
+            ` this bit set (there shouldn't be) the one with the lowest ID will
+            ` be considered the default.
+            Default = 0x0001
+        ];
+    };
+
+    ` The starting date of the game.
+    field("StartingDate") {
+        StartDay as Range<1, 31> = 1;
+        StartMonth as Range<1, 12> = 1;
+        StartYear = 3000;
+    };
+
+    ` String that is prepended to the start of the date whenever it's displayed.
+    field("DatePrefix") {
+        DatePrefix = "";
+    };
+
+    ` String that is appended to the end of the date whenever it's displayed.
+    field("DateSuffix") {
+        DateSuffix = "AD";
+    };
+};
