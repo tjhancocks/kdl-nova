@@ -1,0 +1,63 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+` 
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+` 
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+` 
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` The Explosion (bööm) resource is used to customize the various types of
+` explosion. Nova supports up to 64 different explosion types. The graphics for
+` the explosion are loaded from SpriteAnimation (spïn) resources 400-463,
+` and the sounds are loaded from Audio<MacintoshSound> (snd ) resources 300-363,
+` and the behaviour of each explosion type is contained within Explosion (bööm)
+` resources 128-191.
+@type Explosion : "bööm" {
+    template {
+        DWRD FrameAdvance;
+        DWRD SoundIndex;
+        DWRD GraphicIndex;
+    };
+
+    ` Explosion resources must have an ID of #128 to #191.
+    assert($id >= #128, $id <= #191);
+
+    ` The rate at which the explosion will animate - a value of 100 will cause 
+    ` each frame of the explosion to appear for exactly one frame of the game
+	` animation, and lower values will stretch out the explosion animation and 
+	` make it stay onscreen longer.
+    field("FrameAdvance") {
+    	FrameAdvance;
+    };
+
+    ` The index (0-63) of the explosion sound to associate with this explosion 
+    ` type, or -1 for a silent explosion. Usually you'd set this to either -1 or
+    ` to the same value as the explosion index itself (e.g. 1 for bööm resource
+    ` 129, etc.) but if you want to use the same sound for two different 
+    ` explosion types, you can do that with this field.
+    field("SoundIndex") {
+    	SoundIndex as Range<0, 63>;
+    };
+
+    ` The index (0-63) of the explosion graphic to associate with this explosion
+    ` type. Usually you'd set this to the same value as the explosion index
+    ` itself (e.g. 1 for Explosion resource 129, etc.) but if you want to use
+    ` the same graphic for two different explosion types (like the small weapon
+    ` explosion and the ship-breaking-up explosion) you can do that with this
+    ` field.
+    field("GraphicIndex") {
+    	GraphicIndex as Range<0, 63>;
+    };
+};
