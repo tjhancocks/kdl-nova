@@ -1,0 +1,273 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` The pers resource defines the characteristics of an AI personality – that is,
+` a specific person the player can encounter in the game. These AI-people have
+` their names (which are also the names of the associated përs resource)
+` displayed on the target-info display in place of the name of their ship class.
+` When ships are created, there is a 5% chance that a specific AI-person will
+` also be created. (obviously, as AI-people are killed off, they cease to appear
+` in the game.)
+
+@type Person : "përs" {
+    template {
+        DWRD LinkSyst;
+        DWRD Govt;
+        DWRD AIType;
+        DWRD Aggress;
+        DWRD Coward;
+        DWRD ShipType;
+        DWRD WeapType1;
+        DWRD WeapType2;
+        DWRD WeapType3;
+        DWRD WeapType4;
+        DWRD WeapCount1;
+        DWRD WeapCount2;
+        DWRD WeapCount3;
+        DWRD WeapCount4;
+        DWRD AmmoLoad1;
+        DWRD AmmoLoad2;
+        DWRD AmmoLoad3;
+        DWRD AmmoLoad4;
+        DLNG Credits;
+        DWRD ShieldMod;
+        DWRD HailPict;
+        DWRD CommQuote;
+        DWRD HailQuote;
+        DWRD LinkMission;
+        HWRD Flags;
+        C100 ActivateOn;
+        DWRD GrantClass;
+        DWRD GrantCount;
+        DWRD GrantProb;
+        C040 Subtitle;
+        HLNG Color;
+        HWRD Flags2;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+    };
+
+    ` Which systems the person can be created in.
+    field("AppearsInSystems") {
+        LinkSyst [
+            AnySystem = -1
+
+            ` 128-2175: ID of a specific system
+            ` 9999-10255: Any system belonging to this specific government
+            ` 15000-15255: Any system belonging to an ally of this govt
+            ` 20000-20255: Any system belonging to any but this govt
+            ` 25000-25255: Any system belonging to an enemy of this govt
+        ];
+    };
+
+    ` The person's governmental affiliation
+    field("Government") {
+        Govt as Government& = #-1;
+    };
+
+    ` The person's AI type
+    field("AI") {
+        AIType as Range<1, 4> [
+            WimpyTrader = 1,
+            BraveTrader = 2,
+            Warship = 3,
+            Interceptor = 4
+        ];
+    };
+
+    ` The person's aggression, i.e. how close ships have to be before the person
+    ` will attack them, on a scale of 1 (close) to 3 (far).
+    field("Aggression") {
+        Aggress as Range<1, 3>;
+    };
+
+    ` At what percent of total shield capacity will the person run away from a
+    ` fight? e.g. a value of 25 would cause the person to retreat when his
+    ` shields dropped to 25%.
+    field("Coward") {
+        Coward as Range<0%, 100%>;
+    };
+
+    ` ID number of the person's ship class.
+    field("ShipType") {
+        ShipType as Ship&;
+    };
+
+    ` Extra weapons the ship is equipped with. Specify weapon ID numbers (-1 for
+    ` unused), counts (-1 or 0 = none, 1 and up adds this many of the specified
+    ` weapon) and ammo loads. Standard weapons can be removed with a negative
+    ` count.
+    field("Weapons") repeatable<1, 4> {
+        WeapType<$FieldNumber> as Weapon& = #-1;
+        WeapCount<$FieldNumber> = 0;
+        AmmoLoad<$FieldNumber> = 0;
+    };
+
+    ` How many credits the person carries. 0 is no credits, 1 and up means
+    ` that many credits +/- 25%.
+    field("Credits") {
+        Credits;
+    };
+
+    ` How much to increase/decrease the person's shield capacity, in percent.
+    ` For example, a value of 130 entered here would make the person's ship have
+    ` shields that are 30% stronger than if they were flying a stock ship.
+    ` Similarly, a value of 70 would make their shields 30% weaker. A value less
+    ` than zero makes this person invincible.
+    field("ShieldMod") {
+        ShieldMod;
+    };
+
+    ` ID number of a PICT resource to be displayed in the communications dialog
+    ` instead of the standard picture for this person's ship type.
+    field("HailPicture") {
+        HailPict as Image<MacintoshPicture>& = #-1;
+    };
+
+    ` Index number of an entry in STR# resource 7100, to be displayed in the
+    ` communications dialog.
+    field("CommQuote") {
+        CommQuote;
+    };
+
+    ` ndex number of an entry in STR# resource 7101, to be displayed at the
+    ` bottom of the game screen (i.e. over the radio).
+    field("HailQuote") {
+        HailQuote;
+    };
+
+    ` What mission to activate when the ship is boarded or hailed.
+    field("LinkMission") {
+        LinkMission as Mission& = #-1;
+    };
+
+    ` Some control bits.
+    field("Flags") {
+        Flags as Bitmask = 0 [
+            ` The special ship will hold a grudge if attacked, and will
+            ` subsequently attack the player wherever the twain shall meet.
+            HoldsGrudge = 0x0001,
+
+            ` Uses escape pod & has afterburner .
+            UsesEscapePod = 0x0002,
+
+            ` HailQuote only shown when ship has a grudge against the player.
+            HailQuoteOnGrudge = 0x0004,
+
+            ` HailQuote only shown when ship likes player.
+            HailQuoteOnLike = 0x0008,
+
+            ` Only show HailQuote when ship begins to attack the player.
+            HailQuoteOnAttack = 0x0010,
+
+            ` Only show HailQuote when ship is disabled.
+            HailQuoteOnDisable = 0x0020,
+
+            ` When LinkMission is accepted with a single SpecialShip, replace it
+            ` with this ship while removing this one from play. This is
+            ` generally only useful for escort and refuel-a-ship missions.
+            ` Note: if the mission's SpecialShip düde type contains the përs
+            ` ship's ship type in it, the SpecialShip that's created will be of
+            ` the same type as the përs ship, regardless of the probabilities in
+            ` the düde resource. This is to prevent a përs ship from
+            ` accidentally morphing into another ship type before the player's
+            ` eyes. If you really do want to have the përs ship be replaced by
+            ` a SpecialShip of a different type, use a düde in the mission's
+            ` ShipDude field that doesn't contain the përs's ship type.
+            ReplaceShipInLinkMission = 0x0040,
+
+            ` Only show quote once.
+            OnlyQuoteOnce = 0x0080,
+
+            ` Deactivate ship (i.e. don’t make it show up again) after accepting
+            ` its LinkMission.
+            DeactivateAfterLinkMission = 0x0100,
+
+            ` Offer ship’s LinkMission when boarding it instead of when
+            ` hailing it.
+            LinkMissionOnBoard = 0x0200,
+
+            ` Don’t show quote when ship’s LinkMission is not available.
+            NoQuoteIfMissionUnavailable = 0x0400,
+
+            ` Make ship leave after accepting its LinkMission.
+            LeaveAfterLinkMission = 0x0800,
+
+            ` Don’t offer if player is flying a wimpy freighter (aiType 1).
+            DontOfferIfPlayerIsWimpyFreighter = 0x1000,
+
+            ` Don’t offer if player is flying a beefy freighter (aiType 2).
+            DontOfferIfPlayerIsBeefyFreighter = 0x2000,
+
+            ` Don’t offer if player is flying a warship (aiType 3).
+            DontOfferIfPlayerIsWarship = 0x4000,
+
+            ` Show disaster info when hailing.
+            ShowDisasterInfoWhenHailing = 0x8000
+        ];
+        Flags2 as Bitmask = 0 [
+            ` This person starts with zero fuel
+            StartsWithNoFuel = 0x0001
+        ];
+    };
+
+    ` Control bit test expression. Leave blank if unused.
+    field("ActivateOn") {
+        ActivateOn = "";
+    };
+
+    ` The class of outfit item that is given out by this person's ship when
+    ` boarded by the player. If there are multiple outfit items with the same
+    ` ItemClass value, Nova will choose a random outfit item of that
+    ` ItemClass. Set to 0 or - 1 if unused.
+    field("GrantClass") {
+        GrantClass = -1;
+    };
+
+    ` The maximum number of outfit items to be given when boarded by the player
+    ` - the actual value given will be between GrantCount/2 and GrantCount.
+    field("GrantCount") {
+        GrantCount = 0;
+    };
+
+    ` The probability that this person will grant the player any items when
+    ` boarded. Set to 100 for maximum chance, zero if unused.
+    field("GrantChance") {
+        GrantProb as Range<0%, 100%> = 0%;
+    };
+
+    ` Custom subtitle string for this person (shown in targeting pane)
+    field("Subtitle") {
+        Subtitle;
+    };
+
+    ` The colour to paint this person's ship, encoded the same as HTML colours
+    ` (00RRGGBB). Set to 00000000 if unused (which is the same as 00FFFFFF, or
+    ` "pure white paint" i.e. no shading).
+    field("Color") {
+        Color;
+    };
+};

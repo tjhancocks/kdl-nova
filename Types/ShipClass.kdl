@@ -1,0 +1,133 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` A dude resource can be thought of as a container for ships that share certain
+` characteristics. Any ship of a given dude class will have that dude class's AI
+` type and governmental affiliation, and will yield the same types of booty when
+` boarded. In a dude resource, up to 16 different ship classes can be pointed
+` to, with a probability set for each ship class. The result of all this is
+` that, in other parts of Nova's data file, you can point to a dude class and
+` know that Nova will create a ship of the proper AI type and governmental
+` alignment, and will pick the new ship's type based on the probabilities you
+` set in the dude resource. The dude resource's fields are:
+
+@type ShipClass : "düde" {
+    template {
+        DWRD AIType;
+        DWRD Govt;
+        HWRD Flags;
+        DWRD InfoTypes;
+        DWRD ShipType1;
+        DWRD ShipType2;
+        DWRD ShipType3;
+        DWRD ShipType4;
+        DWRD ShipType5;
+        DWRD ShipType6;
+        DWRD ShipType7;
+        DWRD ShipType8;
+        DWRD ShipType9;
+        DWRD ShipType10;
+        DWRD ShipType11;
+        DWRD ShipType12;
+        DWRD ShipType13;
+        DWRD ShipType14;
+        DWRD ShipType15;
+        DWRD ShipType16;
+        DWRD Probability1;
+        DWRD Probability2;
+        DWRD Probability3;
+        DWRD Probability4;
+        DWRD Probability5;
+        DWRD Probability6;
+        DWRD Probability7;
+        DWRD Probability8;
+        DWRD Probability9;
+        DWRD Probability10;
+        DWRD Probability11;
+        DWRD Probability12;
+        DWRD Probability13;
+        DWRD Probability14;
+        DWRD Probability15;
+        DWRD Probability16;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+    };
+
+    field("AI") {
+        AIType as Range<1, 4> [
+            WimpyTrader = 1,
+            BraveTrader = 2,
+            Warship = 3,
+            Interceptor = 4
+        ];
+    };
+
+    field("Government") {
+        Govt as Government&;
+    };
+
+    ` You can set different combinations of booty to be had from ships of a
+    ` certain dude class by ORing different bits into the dude's Booty field.
+    ` If a dude class has a booty flag of 0x0000, then you can't get anything
+    ` from the ship, and you're told that you were "repelled while attempting to
+    ` board" it. The different booty flags are documented below.
+    field("Booty") {
+        Flags as Bitmask [
+            Food = 0x0001,
+            Industrial = 0x0002,
+            MedicalSupplies = 0x0004,
+            LuxuryGoods = 0x0008,
+            Metal = 0x0010,
+            Equipment = 0x0020,
+
+            ` Carries money (amount depends on the ship's purchase price)
+            Money = 0x0040,
+
+            ` Ships of this dude type can't be hit by the player and their shots
+            ` can't hit the player (useful for things like AuxShip mission
+            ` escorts, etc.).
+            CantHitPlayer = 0x0100
+        ];
+    };
+
+    ` What kind of info to display when hailed.
+    field("InfoTypes") {
+        InfoTypes as Bitmask [
+            GoodPrices = 0x0001,
+            DisasterInfo = 0x0002,
+            GenericGovernmentHail = 0x8000
+
+            ` 0x4xxx flags are specific advice; the lower 12 bits of th value
+            ` are added to 7500 to get the ID of the STR# resource from which
+            ` to get the quote).
+        ];
+    };
+
+    field("Ships") repeatable<1, 16> {
+        ShipType<$FieldNumber> as Ship& = #-1;
+        Probability<$FieldNumber> as Range<0%, 100%> = 0%;
+    };
+};

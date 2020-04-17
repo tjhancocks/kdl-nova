@@ -1,0 +1,245 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` Syst resources store information on star systems, in which all combat,
+` trading, and spaceflight take place. Each system can be linked to up to 16
+` other systems, and the player can make hyperspace jumps back and forth between
+` them.
+
+@type System : "sÿst" {
+    template {
+        DWRD xPos;
+        DWRD yPos;
+        DWRD Con1;
+        DWRD Con2;
+        DWRD Con3;
+        DWRD Con4;
+        DWRD Con5;
+        DWRD Con6;
+        DWRD Con7;
+        DWRD Con8;
+        DWRD Con9;
+        DWRD Con10;
+        DWRD Con11;
+        DWRD Con12;
+        DWRD Con13;
+        DWRD Con14;
+        DWRD Con15;
+        DWRD Con16;
+        DWRD Nav1;
+        DWRD Nav2;
+        DWRD Nav3;
+        DWRD Nav4;
+        DWRD Nav5;
+        DWRD Nav6;
+        DWRD Nav7;
+        DWRD Nav8;
+        DWRD Nav9;
+        DWRD Nav10;
+        DWRD Nav11;
+        DWRD Nav12;
+        DWRD Nav13;
+        DWRD Nav14;
+        DWRD Nav15;
+        DWRD Nav16;
+        DWRD DudeType1;
+        DWRD DudeType2;
+        DWRD DudeType3;
+        DWRD DudeType4;
+        DWRD DudeType5;
+        DWRD DudeType6;
+        DWRD DudeType7;
+        DWRD DudeType8;
+        DWRD DudeProb1;
+        DWRD DudeProb2;
+        DWRD DudeProb3;
+        DWRD DudeProb4;
+        DWRD DudeProb5;
+        DWRD DudeProb6;
+        DWRD DudeProb7;
+        DWRD DudeProb8;
+        DWRD AvgShips;
+        DWRD Govt;
+        DWRD Message;
+        DWRD Asteroids;
+        DWRD Interference;
+        DWRD Person1;
+        DWRD Person2;
+        DWRD Person3;
+        DWRD Person4;
+        DWRD Person5;
+        DWRD Person6;
+        DWRD Person7;
+        DWRD Person8;
+        DWRD PersProb1;
+        DWRD PersProb2;
+        DWRD PersProb3;
+        DWRD PersProb4;
+        DWRD PersProb5;
+        DWRD PersProb6;
+        DWRD PersProb7;
+        DWRD PersProb8;
+        HLNG BkgndColor;
+        DWRD Murk;
+        HWRD AstTypes;
+        C100 Visiblility;
+        DWRD ReinfFleet;
+        DWRD ReinfTime;
+        DWRD ReinfIntrval;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+    };
+
+    ` The first two fields in the syst resource tell Nova where on the map to
+    ` place it:
+    field("Position") {
+        xPos;
+        yPos;
+    };
+
+    ` The next fields store the hyperspace links to up to 16 other systems:
+    field("HyperspaceLinks") repeatable<1, 16> {
+        Con<$FieldNumber> as System& = #-1;
+    };
+
+    ` The next fields store the stellar navigation defaults (F1-F4 for the first
+    ` four) for the system. It is important to always set navigation defaults
+    ` for stellar objects in your systems, because that's how Nova's AI routines
+    ` and status display keep track of stellar objects; if you don't set a
+    ` planet as a nav default, the AIs won't "see" it, it won't show up on the
+    ` radar, and you can't select it.
+    field("NavigationDefaults") repeatable<1, 16> {
+        Nav<$FieldNumber> as StellarObject& = #-1;
+    };
+
+    ` The next fields tell Nova how many ships, and of what kind, to put in the
+    ` system: ID number of the ship class to place, and robability that a given
+    ` ship placed is of the corresponding class.
+    field("ShipClasses") repeatable<1, 8> {
+        DudeType<$FieldNumber> as ShipClass& = #-1;
+        DudeProb<$FieldNumber> as Range<0%, 100%> = 0%;
+    };
+
+    ` The average number of AI ships in the system
+    field("AverageShipCount") {
+        AvgShips;
+    };
+
+    ` Which government owns the system.
+    field("Government") {
+        Govt as Government& = #-1 [
+            Independent = #-1
+        ];
+    };
+
+    ` Which message buoy string to display: if not -1, use this entry in STR#
+    ` resource 1000 as the text of the message buoy.
+    field("Message") {
+        Message = -1;
+    };
+
+    ` How many asteroids to put in the system, from 0 to 16.
+    field("Asteroids") {
+        Asteroids as Range<0, 16>;
+    };
+
+    ` How thick the static in the system should be. 0 is no static, 100 is
+    ` complete sensor blackout.
+    field("Interference") {
+        Interference as Range<0%, 100%>;
+    };
+
+    ` Want to make a ‘pers’ type ship always appear? Put its ID into one of the
+    ` Person fields that appear at the end of the syst resource.
+    field("Persons") repeatable<1, 8> {
+        Person<$FieldNumber> as Person& = #-1;
+        PersProb<$FieldNumber> as Range<0%, 100%> = 0%;
+    };
+
+    ` The system's background color, encoded the same as HTML colours. (RRGGBB)
+    ` ...set to zero for pure black.
+    field("BackgroundColor") {
+        BkgndColor;
+    };
+
+    ` The murkiness of the system (0-100). Zero will cause everything to appear
+    ` normally - 100 will cause the player to question their current glasses
+    ` prescription. A value less than zero is equivalent to zero murk but also
+    ` hides the starfield.
+    field("Murk") {
+        Murk as Range<-1, 100>;
+    };
+
+    ` Flag bits that determine what types of asteroids will appear in this
+    ` system:
+    ` 0x0001 is ID 128
+    ` 0x0002 is ID 129
+    ` 0x0004 is ID 130
+    ` ...
+    ` 0x8000 is ID 143
+    field("AsteroidTypes") {
+        AstTypes as Bitmask;
+    };
+
+    ` The Visibility field controls how and when to make the system visible or
+    ` invisible. You can pull off some cool tricks with this field, including
+    ` presenting the illusion that system has changed in some way by hiding the
+    ` original system and replacing it with a copy that is identical except for
+    ` the desired changes. The Visibility field is a control bit test expression
+    ` – leave it blank if unused.
+    ` Note: Using the Visibility field to replace one system with another will
+    ` work fine as long as they have the exact same coordinates (that's how Nova
+    ` knows to update the hyper links, etc.) But, if you're going to have
+    ` systems replacing each other in response to ncb changes, be sure that the
+    ` Visibility fields of all the systems are mutually exclusive, or the
+    ` resulting behaviour will be undefined and probably incorrect.
+    field("Visiblility") {
+        Visiblility = "";
+    };
+
+    ` The ID of a fleet to use as this system's reinforcement fleet. If ships
+    ` allied with the reinforcement fleet's government are under attack and the
+    ` combat odds against them exceed the MaxOdds field of the reinforcement
+    ` fleet's government, the reinforcement fleet will be called in. Set to 0
+    ` or -1 if unused.
+    field("ReinforcementFleet") {
+        ReinfFleet as Fleet& = #-1;
+    };
+
+    ` The delay between the time the reinforcement call goes out and the time
+    ` the fleet appears. A value of 30 = one second.
+    field("ReinforcementTime") {
+        ReinforcementTime;
+    };
+
+    ` The interval, in days, that it takes for the reinforcement fleet to be
+    ` regenerated. If you set this to 0, a reinforcement fleet will be available
+    ` every day. If you set this higher than zero, it will take that number of
+    ` days for the reinforcement fleet to be available again.
+    field("ReinforcementIntrval") {
+        ReinfIntrval;
+    };
+};

@@ -1,0 +1,154 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` The rank resource is used to give the player a feeling of 'belonging' to a
+` given government. It can also be used to give the player certain advantages
+` that come with rank. When a rank is made active (which is  accomplished
+` through any suitable control bit set string) the player is given all the
+` privileges of that rank, whatever they might be, and the name of that rank is
+` displayed in the player-info dialog.
+
+@type Rank : "ränk" {
+    template {
+        DWRD Weight;
+        DWRD Govt;
+        DWRD PriceMod;
+        DLNG Salary;
+        DLNG SalaryCap;
+        HLNG Contrib1;
+        HLNG Contrib2;
+        HWRD Flags;
+        C040 ConvName;
+        C040 ShortName;
+    };
+
+    ` The importance of this rank, relative to the other rank resources that
+    ` might be active. Ranks with higher weight are displayed first in the
+    ` player-info dialog, and the active rank with the highest weight is
+    ` selected for the <PRK> and <PSR> mission briefing tags.
+    field("Weight") {
+        Weight;
+    };
+
+    ` The ID of the government affiliated with this rank.
+    field("Government") {
+        Govt as Government&;
+    };
+
+    ` Used to modify the prices of items and ships at planets owned by the
+    ` affiliated government. A value of 100 equals 100% of original price (i.e.
+    ` prices are unchanged). Higher or lower values raise or lower the prices
+    ` correspondingly. (can be used to let distinguished players get special
+    ` deals on ships and items at "friendly" planets that have granted them the
+    ` rank).
+    field("PriceMod") {
+        PriceMod;
+    };
+
+    ` The number of credits that the affiliated government will pay the player,
+    ` per day.
+    field("Salary") {
+        Salary;
+    };
+
+    ` The maximum amount of money the player can have before the affiliated
+    ` government stops paying the salary. Set to 0 or -1 if unused.
+    field("SalaryCap") {
+        SalaryCap;
+    };
+
+    ` Another 64 bits of Contribute values that kick in when the rank is active.
+    ` These can be used to prevent the player from buying certain items or doing
+    ` certain missions until achieving a certain rank, for example.
+    field("Contrib") {
+        Contrib1 as Bitmask = 0;
+        Contrib2 as Bitmask = 0;
+    };
+
+    ` Flags relating to the privileges of the rank
+    field("Flags") {
+        Flags as Bitmask = 0 [
+            ` Deactivate all other active ranks affiliated with this same govt
+            ` when this rank is activated (excludes permanent ranks)
+            DeactivateOthersOnActivate = 0x0001,
+
+            ` Deactivate all other active ranks affiliated with this same govt
+            ` when this rank is deactivated (excludes permanent ranks).
+            DeactivateOthersOnDeactivate = 0x0002,
+
+            ` Deactivate this rank if player destroys or disables a ship of the
+            ` affiliated government or its allies.
+            DeactivateOnAffiliateKill = 0x0004,
+
+            ` Rank is permanent and cannot be deactivated except if explicitly
+            ` done by a control bit eval string.
+            Permanent = 0x0008,
+
+            ` Deactivate all other active and lower-weighted ranks affiliated
+            ` with this same govt when this rank is activated (excludes
+            ` permanent ranks).
+            DeactivateLowerWeightsOnActivate = 0x0010,
+
+            ` Deactivate all other active and lower-weighted ranks affiliated
+            ` with this same govt when this rank is deactivated (excludes
+            ` permanent ranks).
+            DeactivateLowerWeightsOnDeactivate = 0x0020,
+
+            ` Deactivate this rank if the player commits any crime against the
+            ` affiliated government.
+            DeactivateOnCrime = 0x0040,
+
+            ` Ships of the affiliated government will not automatically attack
+            ` the player when he has this rank.
+            NoAutoAttack = 0x0100,
+
+            ` All planets of the affiliated government will let the player land
+            ` when he has this rank, regardless of their MinStatus field.
+            AlwaysAllowLanding = 0x0200,
+
+            ` Player can always request battle assistance from ships of the
+            ` affiliated government, who will also call in reinforcements on the
+            ` player's behalf if they are available.
+            AlwaysAssistCombat = 0x0400,
+
+            ` Ships allied with the affiliated govt will always repair or
+            ` refuel the player for free.
+            AlwaysRenderAid = 0x0800
+        ];
+    };`
+
+    ` The rank name as used in conversation, through mission briefings and the
+    ` <PRK> tag. If this is set to an empty string, the rank will never be used
+    ` in conversation. If there are no active ranks or none of the active ranks
+    ` have ConvNames, the <PRK> tag will simply display "captain". example: if
+    ` ConvName is "Space Marshall", then "Good job, <PRK>" becomes either "Good
+    ` job, Space Marshall" or "Good job, captain".
+    field("ConversationName") {
+        ConvName;
+    };
+
+    ` The short rank named as used in conversation through mission briefings and
+    ` the <PSR> tag. Behaviour with an empty string is the same as for the
+    ` ConvName field. example: if ShortName is "Marshall" then "Hi there, <PSR>"
+    ` becomes either "Hi there, Marshall" or "Hi there, captain".
+    field("ShortName") {
+        ShortName;
+    };
+};

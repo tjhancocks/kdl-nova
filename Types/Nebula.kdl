@@ -1,0 +1,88 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` Nëbu resources contain info on the nebulae (or other space phenomena) which
+` are displayed in the background of the star map. These images don’t actually
+` have any effect on events in the game, they’re just there to look pretty. You
+` can, however, combine nëbu background images with custom asteroid or
+` interference data in the sÿst resources for cool localized effects, and you
+` can also use the nëbu resource's OnExplore field to enable events when the
+` player explores a certain nebula.
+
+` The PICT resources associated with the 32 available nëbu resources are
+` numbered 9500-9724. Each nebula can have up to seven PICT resources associated
+` with it; the first nebula's PICTs are 9500-96, the second's are 9507-13, etc.
+` The engine will pick the best nebula image to display for a given map scale
+` (the map scales used in Nova are 42.1%, 56.2%, 75.0%, 100.0%, 133.3%, 177.7%,
+` and 237.0%). If nebula image of the proper size for the current map scale
+` isn't available, Nova will pick the closest one and stretch it as necessary.
+` PICTs for a given nebula should be sorted by size in ascending order .
+
+@type Nebula : "nëbu" {
+    template {
+        DWRD XPos;
+        DWRD YPos;
+        DWRD XSize;
+        DWRD YSize;
+        C0FF ActiveOn;
+        C0FF OnExplore;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+    };
+
+    ` The image’s position on the star map. These coordinates are expressed in
+    ` the scale of the 'normal' map zoom level (not zoomed in or out) and are
+    ` relative to the upper-left corner of the image.
+    field("Position") {
+        XPos;
+        YPos;
+    };
+
+    ` The image’s size on the star map. These values are expressed in the scale
+    ` of the ‘normal’ map zoom level (not zoomed in or out) and tell Nova how
+    ` big to make the image when the map is at normal zoom.
+    field("Size") {
+        XSize;
+        YSize;
+    };
+
+    ` Control bit test expression. Leave blank if unused.
+    field("ActiveOnExpression") {
+        ActiveOn = "";
+    };
+
+    ` Control bit set expression that is evaluated whenever the nebula is tested
+    ` for visibility and found to be visible. Note that this field is handled a `
+    ` little differently from other control bit set expressions in Nova, because
+    ` the explored state of the nebulae isn't saved from game to game; rather,
+    ` it is recalculated every time based on the systems the player has
+    ` explored. As a result, this expression may get evaluated multiple times,
+    ` so you shouldn't use the random operator or any operators which do
+    ` anything but set or clear control bits here.
+    field("OnExploreExpression") {
+        OnExplore = "";
+    };
+};

@@ -1,0 +1,80 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` Spin resources contain sprite info for simple graphical objects. Whenever Nova
+` needs to load a set of sprites for a particular object, it looks at that
+` object's spin resource, which in turn tells the game how to load the object's
+` sprites. Nova sprites are stored as paired sprite and mask PICT resources, or
+` as rleD/rle8 resources. The sprites in each PICT are arranged in a grid, which
+` can be of any size. The spin resource tells Nova what shape and size the
+` sprites' grid is.
+`
+` Spin resources have certain reserved ID numbers, which correspond to different
+` types of objects:
+` 400-463: Explosions
+` 500: Cargo boxes
+` 501-504: Mini-asteroids for mining
+` 600-605: Main menu buttons
+` 606: Main screen logo
+` 607: Main screen rollover images
+` 608-610: Main screen sliding buttons
+` 650: Target cursor
+` 700: Starfield
+` 800-815: Asteroids
+` 1000-1255: Stellar objects
+` 3000-3255: Weapons
+`
+` It is important to note that the ID numbers of the PICT/rleD/rle8 resources
+` are non-critical, as Nova looks at the spin resources to find the sprites, and
+` not at the actual PICT/rleD/rle8 ID numbers themselves.
+
+@type Sprite : "spïn" {
+    template {
+        DWRD SpritesID;
+        DWRD MasksID;
+        DWRD xSize;
+        DWRD ySize;
+        DWRD xTiles;
+        DWRD yTiles;
+    };
+
+    ` ID number of the sprites' PICT resource (or the ID of the rleD/rle8
+    ` resource).
+    field("Sprites") {
+        SpritesID as Image<MacintoshPicture>&;
+    };
+
+    ` ID number of the masks' PICT resource.
+    field("Masks") {
+        MasksID as Image<MacintoshPicture>&;
+    };
+
+    ` Horizontal and vertical size of each sprite
+    field("TileSize") {
+        xSize;
+        ySize;
+    };
+
+    ` Number of tiles vertically and horizontally in the image
+    field("NumTiles") {
+        xTiles;
+        yTiles;
+    };
+};

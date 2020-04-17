@@ -1,0 +1,390 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` A govt resource defines the parameters for a government, which is in turn
+` defined as "any collection of ships and planets that react collectively to the
+` actions of the player and other ships." Governments keep track of how they
+` feel toward you, and they can also have set enemies and allies.
+
+@type Government : "gövt" {
+    template {
+        DWRD VoiceType;
+        HWRD Flags;
+        HWRD Flags2;
+        DWRD ScanFine;
+        DWRD CrimeTol;
+        DWRD SmugPenalty;
+        DWRD DisabPenalty;
+        DWRD BoardPenalty;
+        DWRD KillPenalty;
+        DWRD ShootPenalty;
+        DWRD InitialRec;
+        DWRD MaxOdds;
+        DWRD Class1;
+        DWRD Class2;
+        DWRD Class3;
+        DWRD Class4;
+        DWRD Ally1;
+        DWRD Ally2;
+        DWRD Ally3;
+        DWRD Ally4;
+        DWRD Enemy1;
+        DWRD Enemy2;
+        DWRD Enemy3;
+        DWRD Enemy4;
+        DWRD SkillMult;
+        HWRD ScanMask;
+        C010 CommName;
+        C010 TargetCode;
+        HLNG Require;
+        HLNG Require;
+        DWRD InhJam1;
+        DWRD InhJam2;
+        DWRD InhJam3;
+        DWRD InhJam4;
+        C040 MediumName;
+        HLNG Color;
+        HLNG ShipColor;
+        DWRD Interface;
+        DWRD NewsPict;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+    };
+
+    ` Sets this government's voice type, used for when you have a ship of this
+    ` government as your escort (i.e. an escort with an inherent attributes govt
+    ` field that points to this govt). There can be up to eight different voice
+    ` types, numbered 0-7. The voice resources are loaded from 'snd ' resources
+    ` as follows:
+    `
+    ` 1000-1009: Voice type 0 acknowledgement speech.
+    ` 1010-1019: Voice type 0 targeting speech.
+    ` 1020-1029: Voice type 0 victory speech.
+    ` 1100-1009: Voice type 1 acknowledgement speech.
+    ` 1110-1019: Voice type 1 targeting speech.
+    ` 1120-1029: Voice type 1 victory speech.
+    ` ...etc, up to:
+    ` 1700-1709: Voice type 7 acknowledgement speech.
+    ` 1710-1719: Voice type 7 targeting speech.
+    ` 1720-1729: Voice type 7 victory speech.
+    `
+    ` If a particular set of voices (i.e. the acknowledgement, targeting, or
+    ` victory sounds for a given voice type) contains an even number of sound
+    ` resources, Nova will only use either the even- or odd- numbered sounds for
+    ` each particular ship. The Nova scenario uses this to implement both male
+    ` and female voices for certain governments. To let each ship decide for
+    ` itself whether to use even- or odd-numbered sounds, set VoiceType to
+    ` between 0 and 7. To force ships to use only odd-numbered sounds, set
+    ` VoiceType to between 1000 and 1007. To force ships to use only
+    ` even-numbered sounds, set VoiceType to between 2000 and 2007.
+    ` (None of the preceding paragraph applies if Nova doesn't have an even
+    ` number of sounds to work with)
+    ` If you don't want any ships of a government to use speech, set that govt's
+    ` VoiceType to -1. Also note that ship types with no inherent attributes
+    ` govt defined (see shïp section for more information) will always use voice
+    ` type 0.
+    field("VoiceType") {
+        VoiceType = 0;
+    };
+
+    ` Sets a variety of characteristics
+    field("Flags") {
+        Flags1 as Bitmask = 0 [
+            ` Xenophobic (Warships of this govt attack everyone except their
+            ` allies. Useful for making pirates and other nasties.)
+            Xenophobic = 0x0001,
+
+            ` Ships of this govt will attack the player in non-allied systems if
+            ` he's a criminal there (useful for making one govt care only about
+            ` the player's actions on its home turf, while another is nosy and
+            ` enforces its own laws everywhere it goes).
+            AlwaysAttackCriminal = 0x0002,
+
+            ` Always attacks the player
+            AlwaysAttackPlayer = 0x0004,
+
+            ` Player's shots won't hit ships of this govt.
+            PlayerCantHit = 0x0008,
+
+            ` Warships of this govt will retreat when their shields drop below
+            ` 25% - otherwise they fight to the death.
+            FleeAtLowShield = 0x0010,
+
+            ` Nosy ships of other non-allied governments ignore ships of this
+            ` govt that are under attack.
+            NosyShipsWontAid = 0x0020,
+
+            ` Never attacks player (also, player’s weapons can't hit them).
+            CantHitPlayer = 0x0040,
+
+            ` Freighters (i.e. AiTypes 1 and 2) for this particular government
+            ` have 50% of the standard InherentJam value for warships (AiType 3)
+            ` of the same government.
+            FreightersWorseJamming = 0x0080,
+
+            ` 'pers' ships of this govt won’t use escape pod, but will act as if
+            ` they did.
+            PersonsAlwaysEscape = 0x0100,
+
+            ` Warships will take bribes.
+            WarshipsTakeBribes = 0x0200,
+
+            ` Can't hail ships of this govt. (if a ship type has an inherent
+            ` attributes govt which includes this flag, all ships of that type
+            ` will inherit this property)
+            CantHail = 0x0400,
+
+            ` Ships of this govt start out disabled (derelicts). Note that ships
+            ` of other governments don't care if you attack or board derelict
+            ` govt ships.
+            ShipsAreDerelict = 0x0800,
+
+            ` Warships will plunder non-mission, non-player enemies before
+            ` destroying them.
+            WarshipsWillBoard = 0x1000,
+
+            ` Freighters will take bribes.
+            FreightersTakeBribes = 0x2000,
+
+            ` Planets of this govt will take bribes
+            PlanetsTakeBribes = 0x4000,
+
+            ` Ships of this govt taking bribes will demand a larger percentage
+            ` of your cash supply, and their planets will always take bribes
+            ` (useful for pirates).
+            Greedy = 0x8000
+        ];
+        Flags2 as Bitmask = 0 [
+            ` When hailing ships of this govt, the request assistance / beg for
+            ` mercy button is disabled and the govt is not talkative.
+            WontAid = 0x0001,
+
+            ` This govt is considered "minor" for the purposes of drawing the
+            ` political boundaries on the map.
+            IsMinor = 0x0002,
+
+            ` This govt's systems don't affect the political boundaries on the
+            ` map.
+            NoBoundaries = 0x0004,
+
+            ` Ships of this govt don't send distress messages and don't respond
+            ` with greetings when hailed (if a ship type has an inherent
+            ` attributes govt which includes this flag, all ships of that type
+            ` will inherit this property)
+            NoDistressMessages = 0x0008,
+
+            ` Roadside Assistance - Ships of this govt will always repair or
+            ` refuel the player for free.
+            RoadsideAssistance = 0x0010,
+
+            ` Ships of this govt don't use hypergates.
+            CantUseHypergates = 0x0020,
+
+            ` Ships of this govt prefer to use hypergates instead of jumping out
+            PreferHypergates = 0x0040,
+
+            ` Ships of this govt prefer to use wormholes instead of jumping out
+            PreferWormholes = 0x0080
+        ];
+    };
+
+    ` If the player is caught carrying an illegal (and non-mission-related)
+    ` cargo or item by a ship of this govt and he isn't yet evil enough to
+    ` attack (i.e. his legal status in the current system isn't below CrimeTol)
+    ` then he will be fined the amount in this field.
+    ` 1 and up: fine this amount.
+    ` 0: no fine, just a warning
+    ` -1 and below: fine this % of the player's cash (-5 is 5%, etc).
+    field("ScanFine") {
+        ScanFine;
+    };
+
+    ` The maximum amount of evilness the player can accumulate before warships
+    ` of this govt start to beat on him.
+    field("CrimeTolerance") {
+        CrimeTol;
+    };
+
+    ` The amount of evilness a player gains for being detected smuggling illegal
+    ` cargo (defined in a misn resource) past this government's ships.
+    field("SmugglePenalty") {
+        SmugPenalty;
+    };
+
+    ` The amount of evilness for disabling one of this govt's ships.
+    field("DisablePenalty") {
+        DisabPenalty;
+    };
+
+    ` Evilness from pirating one of this govt's ships.
+    field("BoardPenalty") {
+        BoardPenalty;
+    };
+
+    ` Evilness from killing this govt's ships.
+    field("KillPenalty") {
+        KillPenalty;
+    };
+
+    ` Evilness from shooting one of this govt's ships (currently ignored).
+    field("ShootPenalty") {
+        ShootPenalty;
+    };
+
+    ` The player’s initial legal record in systems controlled by this govt (0 is
+    ` neutral, positive is good, negative is bad)
+    field("InitialRecord") {
+        InitialRec;
+    };
+
+    ` The maximum combat odds ships of this govt will consider favourable.
+    ` Combat odds are calculated by summing the strengths of the ship's enemies
+    ` (where a ship's strength is taken from the Strength field in the shïp
+    ` resource, and modified from between 30% and 100% of that value depending
+    ` on the ship's present shield stat) and comparing it to the sum of the
+    ` strength of the ship's friends. A value of 100 in this field represents
+    ` 1-to-1 combat odds, and will cause a ship of this govt not to attack
+    ` unless it calculates that it is as strong, or stronger than, its enemy.
+    ` A value of 200 represents 2-to-1 combat odds, meaning that ships of this
+    ` govt won't engage if they are outnumbered by more than 2-to-1. 300 means
+    ` that ships of this govt won't engage a group of enemies more than 3x
+    ` stronger than them and their friends, etc.
+    field("MaxOdds") {
+        MaxOdds;
+    };
+
+    ` Allows you to assign this govt to up to four different "classes", which
+    ` are simply arbitrary groupings of govts that you can use to flexibly
+    ` assign allies and enemies. Two govts of the same class are not
+    ` inherently allied unless one of them has that same class number set in
+    ` one of its Ally fields. Set unused class fields to -1.
+    ` Doing evil deeds to one government will improve your rating with its
+    ` enemies, and vice versa. Allied governments also communicate your actions,
+    ` so attacking one government will make its allies hate you too.
+    field("Classes") repeatable<1, 4> {
+        Class<$FieldNumber> = -1;
+    };
+
+    ` The number of up to four classes that this govt will be allied with. Set
+    ` to -1 if unused.
+    field("AllyClasses") repeatable<1, 4> {
+        Ally<$FieldNumber> = -1;
+    };
+
+    ` The number of up to four classes that this govt will be enemies with. Set
+    ` to - 1 if unused.
+    field("EnemyClasses") repeatable<1, 4> {
+        Enemy<$FieldNumber> = -1;
+    };
+
+    ` The SkillMult field allows you to apply a global multiplier to the skill
+    ` levels of ships that belong to this government. A value of 100 will cause
+    ` this government's ships to be just as skilled as any other ships of the
+    ` same type. A value of 50 will cause this govt's ships to only be 50% as
+    ` skilled, and a value of 150 will cause this govt's ships to be 50% more
+    ` skilled as the stock ship is rated. This allows you to create governments
+    ` whose pilots are more highly trained than the stock pilots, so they can
+    ` gain extra speed and acceleration from their ships. Values in this field
+    ` of less than 1 are ignored.
+    field("SkillMult") {
+        SkillMult = 100;
+    };
+
+    ` This is a 16-bit flags field that is used in conjunction with the ScanMask
+    ` field in the mïsn resource. If any of the 1 bits in a government's
+    ` ScanMask field match any of the 1 bits in a mission's ScanMask field, that
+    ` government will consider the mission's cargo illegal. Set to zero if
+    ` unused.
+    field("ScanMask") {
+        ScanMask = 0;
+    };
+
+    ` The short string to show for ships of this government when they are hailed
+    ` by the player.
+    field("CommName") {
+        CommName;
+    };
+
+    ` The short string to show in the player's target display when a ship of
+    ` this government is targeted.
+    field("TargetCode") {
+        TargetCode;
+    };
+
+    ` These two Require fields together form a 64-bit flag that is logically
+    ` and'ed with the Contribute fields from the player's current ship and
+    ` outfit items. If for each 1 bit in the Require fields there is not a
+    ` matching 1 bit in one or more of the Contribute fields then you won't be
+    ` allowed to visit any planets or stations owned by this govt - this is
+    ` useful for making travel permits, for example. Leave these set to zero if
+    ` unused.
+    field("Require") {
+        Require1 = 0;
+        Require2 = 0;
+    };
+
+    ` The government's inherent jamming ability for each of the four jamming
+    ` types, from 0 to 100%.
+    field("InherentJamming") repeatable<1, 4> {
+        InhJam<$FieldNumber> as Range<0%, 100%> = 0%;
+    };
+
+    ` The government's name in medium length, which is primarily used in the
+    ` string "Sensors detect xxx reinforcement fleet approaching."
+    field("MediumName") {
+        MediumName;
+    };
+
+    ` The government's theme colour, encoded the same as HTML colours.
+    ` (00RRGGBB).
+    field("Color") {
+        Color;
+    };
+
+    ` The theme colour for this government's ships, encoded the same as HTML
+    ` colours (00RRGGBB). You should use this sparingly, as it gets annoying
+    ` when you have dozens of multicoloured variants of some ship type flying
+    ` around all at once. Set to 00000000 if unused (which is the same as
+    ` 00FFFFFF, or "pure white paint" i.e. no shading).
+    field("ShipColor") {
+        ShipColor;
+    };
+
+    ` ID of an intf resource to use when the player is flying a ship whose
+    ` inherent attributes govt or inherent combat govt is equal to this govt
+    ` type. Values less than 128 will be interpreted as 128.
+    field("Interface") {
+        Interface;
+    };
+
+    ` ID of a PICT resource to use as the background of the news window when the
+    ` player is on a planet or station owned by this govt. Values less than
+    ` 128 are ignored and the standard independent/generic news background
+    ` (ID 9000) is substituted instead.
+    field("NewsPict") {
+        NewsPict;
+    };
+};
