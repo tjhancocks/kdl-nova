@@ -1,0 +1,470 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` Outf resources store information on the items that you can buy when you choose
+` 'Outfit Ship' at a planet or station.
+
+@type Outfit : "oütf" {
+    template {
+        DWRD DispWeight;
+        DWRD Mass;
+        DWRD TechLevel;
+        DWRD ModType1;
+        DWRD ModVal1;
+        DWRD Max;
+        HWRD Flags;
+        DLNG Cost;
+        DWRD ModType2;
+        DWRD ModVal2;
+        DWRD ModType3;
+        DWRD ModVal3;
+        DWRD ModType4;
+        DWRD ModVal4;
+        HLNG Contributes1;
+        HLNG Contributes2;
+        HLNG Requires1;
+        HLNG Requires2;
+        C0FF Availability;
+        C0FF OnPurchase;
+        C0FF OnSell;
+        C040 ShortName;
+        C040 LCName;
+        C041 LCPlural;
+        DWRD ItemClass;
+        HWRD ScanMask;
+        DWRD BuyRandom;
+        DWRD RequireGovt;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+    };
+
+    ` The display weight of this item. Items with a higher display weight are
+    ` shown closer to the top of the outfit dialog. This can be used to
+    ` effectively rearrange the order in which items are displayed without
+    ` rearranging the resources themselves.
+    field("DisplayWeight") {
+        DispWeight;
+    };
+
+    ` The mass in tons of the item (0 = no appreciable mass).
+    field("Mass") {
+        Mass;
+    };
+
+    ` What the technology level of the item is. This item will be available at
+    ` all spaceports with a tech level of this value or higher. (The exception
+    ` to this rule involves the SpecialTech fields of the spöb resource; see the
+    ` section on spöb resources for more information.)
+    field("TechLevel") {
+        TechLevel;
+    };
+
+`   ` This field determines the type of outfit. Additional modifications fields
+    ` are for you to specify 'alternate' functions for an outfit item - e.g.,
+    ` a weapon could also reduce the ship’s turning speed. The only restriction
+    ` on ModType2-4 is that you shouldn’t use it for weapons or ammo (modtypes
+    ` 1 or 3).
+    field("Modifications") repeatable<1, 4> {
+        ModType<$FieldNumber> [
+            ` Item is a weapon, ModVal refers to the ID number of the associated
+            ` wëap resource
+            Weapon = 1,
+
+            ` Item adds cargo space, ModVal refers to the number of tons of
+            ` cargo space to add
+            CargoSpace = 2,
+
+            ` Item is ammunition, ModVal refers to the ID number of the
+            ` associated wëap resource
+            Ammunition = 3,
+
+            ` Item increases shield capacity, ModVal is the number of shield
+            ` points to add
+            Shields = 4,
+
+            ` Item increases shield recharge rate, ModVal is how much to speed
+            ` up (1000 = one more shield point per frame)
+            ShieldRecharge = 5,
+
+            ` Item is armor, ModVal is the number of armour points to add
+            Armor = 6,
+
+            ` Item boosts acceleration, ModVal is the amount of accel to add
+            ` (see shïp for more info)
+            Acceleration = 7,
+
+            ` Item increases speed, ModVal is the amount of speed to add (see
+            ` shïp for more info)
+            Speed = 8,
+
+            ` Item increases turn rate, ModVal is the amount of turn change
+            ` (100 = 30 deg/sec)
+            TurnRate = 9,
+
+            ` Item is an escape pod, ModVal is ignored
+            EscapePod = 11,
+
+            ` Item adds fuel capacity, ModVal is the amount of extra fuel
+            ` (100 = 1 jump)
+            FuelCapacity = 12,
+
+            ` Item is a density scanner, ModVal is ignored
+            DensityScanner = 13,
+
+            ` Item is an IFF decoder, ModVal is ignored
+            IFF = 14,
+
+            ` Item is an afterburner, ModVal is how much fuel to use in
+            ` units/sec
+            Afterburner = 15,
+
+            ` Item is a map, ModVal is:
+            ` 1 and up: how many jumps away from present system to reveal
+            ` -1: reveal all inhabited independent systems
+            ` -1000 and below: reveal all systems of this government class,
+            `                  where -1000 is government class 0, -1001 is
+            `                  government class 1, and so on
+            Map = 16,
+
+            ` Item is a cloaking device, ModVal is a bitfield:
+            ` 0x0001: faster fading
+            ` 0x0002: visible on radar
+            ` 0x0004: immediately drops shields on activation
+            ` 0x0008: deactivates when ship takes damage
+            ` 0x0010: use 1 unit of fuel per second
+            ` 0x0020: use 2 units of fuel per second
+            ` 0x0040: use 4 units of fuel per second
+            ` 0x0080: use 8 units of fuel per second
+            ` 0x0100: use 1 unit of shield per second
+            ` 0x0200: use 2 units of shield per second
+            ` 0x0400: use 4 units of shield per second
+            ` 0x0800: use 8 units of shield per second
+            ` 0x1000: area cloak -- ships in formation with a ship carrying
+            `         this cloaking device will also be cloaked
+            CloakingDevice = 17,
+
+            ` Item is a fuel scoop, ModVal is how many frames per unit of fuel
+            ` generated. A negative value sucks fuel instead.
+            FuelScoop = 18,
+
+            ` Item is an auto-refueller, ModVal is ignored
+            AutoRefueller = 19,
+
+            ` Item is an auto-eject (requires escape pod), ModVal is ignored
+            AutoEject = 20,
+
+            ` Item is a clean legal record, ModVal is the ID of the government
+            ` to clear record with, or -1 for all
+            CleanLegalRecord = 21,
+
+            ` Item is a hyperscape speed mod, ModVal is the number of days to
+            ` increase or decrease the hyperspace travel time
+            HyperspaceSpeed = 22,
+
+            ` Item modifies the distance at which ships can enter hyperspace,
+            ` ModVal is the amount to increase or decrease the standard no-jump
+            ` zone radius by (standard radius is 1000)
+            HyperspaceDistance = 23,
+
+            ` Item modifies interference in a system, ModVal is the number by
+            ` which interference should be reduced from the system's normal
+            ` interference value
+            InterferenceModifier = 24,
+
+            ` Item is a marine company, ModVal modifies the ship's capture odds:
+            ` 1 and up: add this number to the ship's effective crew size
+            ` -1 to -100: increase the player's capture odds by this amount
+            `             (e.g. -5 is an increase of 5%)
+            Marines = 25,
+
+            ` Item increases the maximum quantity of another outfit item,
+            ` ModVal is the ID of the other outfit item whose quantity should
+            ` be increased. The maximum quantity of the other item will be
+            ` increased by 100% of its normal value for each matching
+            ` MaxItemIncrease outfit equipped.
+            MaxItemIncrease = 27,
+
+            ` Item modifies the system murkiness, ModVal is the number by which
+            ` murkiness should be reduced from the system's normal murkiness
+            ` value
+            MurkModifier = 28,
+
+            ` Item increases armor recharge, ModVal is how much to speed up
+            ` (1000 = one more armour point per frame).
+            ArmorRecharge = 29,
+
+            ` Item detects cloaked ships, ModVal is a bitfield:
+            ` 0x0001: reveal cloaked ships on radar
+            ` 0x0002: reveal cloaked ships on the screen
+            ` 0x0004: allow targeting of untargetable ships
+            ` 0x0008: allow targeting of cloaked ships
+            CloakScanner = 30,
+
+            ` Item is a mining scoop
+            MiningScoop = 31,
+
+            ` Item is a multi-jump, ModVal is the number of extra jumps to
+            ` perform at once
+            MultiJump = 32,
+
+            ` Item is a jammer, ModVal is the amount of jamming to add or
+            ` subtract
+            JammingType1 = 33,
+            JammingType2 = 34,
+            JammingType3 = 35,
+            JammingType4 = 36,
+
+            ` Item allows hyperspace jumps without slowing down, ModVal is
+            ` ignored
+            FastJump = 37,
+
+            ` Item makes ship inertialess, ModVal is ignored
+            InertialDampener = 38,
+
+            ` Item increases deionization rate, ModVal is the amount of
+            ` deionization to add 100 equals 1 point of ion energy per 1/30th
+            ` of a second. Higher values yield faster ion charge dissipation.
+            IonDissipation = 39,
+
+            ` Item increases ionization capacity, ModVal is amount of extra
+            ` ionization capacity to add
+            IonAbsorber = 40,
+
+            ` Item grants gravity resistance
+            GravityResistance = 41,
+
+            ` Item grants ability to resist deadly stellars
+            ResistDeadlyStellars = 42,
+
+            ` Item paints the player's ship, ModVal is the color encoded as a
+            ` 15-bit colour value, where the bits are: 0RRRRRGGGGGBBBBB (this is
+            ` necessary because the ModVal field isn't big enough to hold a
+            ` 32-bit HTML colour value).
+            Paint = 43,
+
+            ` Item inhibits reinforcements, ModVal is a govt class value. any
+            ` govt with this value in its Class1-4 fields will be prevented from
+            ` calling in reinforcements while the player is in the system and
+            ` has this outfit. Setting this field to -1 will inhibit
+            ` reinforcements for all ships regardless of govt. Note that this
+            ` outfit will only work when carried by the player
+            ReinforcementInhibitor = 44,
+
+            ` Changes max gun count, ModVal is the amount to increase/decrease
+            MaxGuns = 45,
+
+            ` Changes max turret count, ModVal is the amount to
+            ` increase/decrease
+            MaxTurrets = 46,
+
+            ` Destroys the player in flight. Set the modval to the ID of the
+            ` desc resource to show after the player is destroyed, or -1 for
+            ` none.
+            Bomb = 47,
+
+            ` Item scrambles IFF, ModVal is a govt class value. Any govt with
+            ` this value in its Class1-4 fields will fooled into thinking the
+            ` player is a friendly ship and will not attack without provocation.
+            ` Note that this outfit will only work when carried by the player
+            IFFScrambler = 48,
+
+            ` Item will occasionally repair ship when disabled
+            RepairSystem = 49,
+
+            ` Item randomly destroys itself and damages the player (nonfatally)
+            ` in flight. ModVal is the ID of a bööm resource to display when an
+            ` item of this type self-destructs
+            NonlethalBomb = 50
+        ];
+        ModVal<$FieldNumber>;
+    };
+
+    ` How many you can have (not counting weapon limitations).
+    field("MaximumQuantity") {
+        Max;
+    };
+
+    ` Outfit characterstics
+    field("Flags") {
+        Flags as Bitmask = 0 [
+            ` This item is a fixed gun.
+            Gun = 0x0001,
+
+            ` This item is a turret.
+            Turret = 0x0002,
+
+            ` This item stays with you when you trade ships (persistent).
+            Persistent = 0x004,
+
+            ` This item can’t be sold.
+            CantSell = 0x008,
+
+            ` Remove any items of this type after purchase (useful for permits
+            ` and other intangible purchases).
+            RemoveAfterPurchase = 0x0010,
+
+            ` This item is persistent in the case where the player's ship is
+            ` changed by a mission set operator. The item's normal persistence
+            ` for when the player buys or captures a new ship is still
+            ` controlled by the 0x0004 bit.
+            MissionPersistent = 0x0020,
+
+            ` Don't show this item unless the player meets the Require bits, or
+            ` already has at least one of it.
+            HideUnlessRequireMatches = 0x0100,
+
+            ` This item's total price is proportional to the player's ship's
+            ` mass. (ship class Mass field is multiplied by this item's Cost
+            ` field)
+            PriceDependsOnShipMass = 0x0200,
+
+            ` This item's total mass (at purchase) is proportional to the
+            ` player's ship's mass. (ship class Mass field is multiplied by this
+            ` item's Mass field and then divided by 100) Only works for
+            ` positive-mass items.
+            MassDependsOnShipMass = 0x0400,
+
+            ` This item can be sold anywhere, regardless of tech level,
+            ` requirements, or mission bits.
+            CanSellAnywhere = 0x0800,
+
+            ` When this item is available for sale, it prevents all
+            ` higher-numbered items with equal DispWeight from being made
+            ` available for sale at the same time.
+            HidesSameWeightItems = 0x1000,
+
+            ` This outfit appears in the Ranks section of the player info
+            ` dialog instead of in the Extras section.
+            AppearsInRanks = 0x2000,
+
+            ` Don't show this item unless its Availability evaluates to true, or
+            ` if the player already has at least one of it.
+            HideUnlessAvailable = 0x4000
+        ];
+    };
+
+    ` Cost tells Nova how much to charge you for the item.
+    field("Cost") {
+        Cost;
+    };
+
+    ` These two Contribute fields together form a 64-bit flag that is
+    ` subsequently combined with the Contribute fields from the player's ship
+    ` and the other outfit items in the player's possession, to be used with the
+    ` Require fields in the outf and misn resources.
+    field("Contributes") {
+        Contributes1 = 0;
+        Contributes2 = 0;
+    };
+
+    ` These two Require fields together form a 64-bit flag that is logically
+    ` and'ed with the Contribute fields from the player's current ship and
+    ` outfit items. If for each 1 bit in the Require fields there is a matching
+    ` 1 bit in one or more of the Contribute fields, the item will be available.
+    ` Leave these set to zero if unused. Note that depending on the
+    ` configuration of other flags, the item might still appear in the outfit
+    ` window even if the player doesn't meet the Require bits (it will still not
+    ` be able to be purchased).
+    field("Requires") {
+        Requires1 = 0;
+        Requires2 = 0;
+    };
+
+    ` Control bit test expression. Leave blank if unused. Note that depending on
+    ` the configuration of other flags, the item might appear in the outfit
+    ` window even if Availability is false (it will still not be able to be
+    ` purchased)
+    field("Availability") {
+        Availability = "";
+    };
+
+    ` Control bit set expression. Leave blank if unused.
+    field("OnPurchase") {
+        OnPurchase = "";
+    };
+
+    ` Evaluated when the item is sold.
+    field("OnSell") {
+        OnSell = "";
+    };
+
+    ` The short string that is displayed in the outfit dialog menu for this item
+    ` type. If you want to split this name into two separate lines, put the
+    ` characters "\n" into the name, e.g.: "Real Big\nScary Gun". When using
+    ` this, lines that start with an alphanumeric character are drawn in white,
+    ` while lines that start with other symbols are drawn in grey.
+    field("ShortName") {
+        ShortName;
+    };
+
+    ` The lower-case, singular name that's displayed in the player-info dialog
+    ` and other places, e.g. "real big scary gun".
+    field("LowercaseName") {
+        LCName;
+    };
+
+    ` The lower-case, plural name that's displayed in the player-info dialog and
+    ` other places, e.g. "real big scary guns".
+    field("LowercasePlural") {
+        LCPlural;
+    };
+
+    ` The item's classification, used in the përs resource for items that are
+    ` given out by non-player characters' ships. Set to 0 or -1 if unused.
+    field("ItemClass") {
+        ItemClass;
+    };
+
+    ` If this is an "illegal" outfit type, this is used in conjunction with the
+    ` ScanMask field in the gövt resource. If any of the 1 bits in a ship's
+    ` government's ScanMask field match any of the 1 bits in an oütf type's
+    ` ScanMask field, that government will consider that outfit item illegal.
+    ` Set to zero if unused.
+    field("ScanMask") {
+        ScanMask;
+    };
+
+    ` The percent chance that an item of this type will be available for
+    ` purchase on a given day, from 1-100. Values less than 1 or greater than
+    ` 100 are interpreted as 100.
+    field("AvailabilityChance") {
+        BuyRandom as Range<1%, 100%>;
+    };
+
+    ` Which governments the outfit item's Require bits pertain to:
+    ` -1: Requirements apply in all outfit shops.
+    ` 128-383: Requirements apply only on stellars belonging to this govt or its
+    `          allies.
+    ` 1128-1383: Requirements apply only on independent stellars and stellars
+    `            belonging to this govt or its allies.
+    ` 2128-2383: Requirements apply on all stellars except those belonging to
+    `            this govt or its allies.
+    ` 3128-3383: Requirements apply on all stellars except independent stellars
+    `            or stellars belonging to this govt or its allies.
+    field("RequireGovt") {
+        RequireGovt;
+    };
+};
