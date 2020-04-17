@@ -1,0 +1,644 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` The weap resource, surprisingly, stores info on Nova's weapons. The name of
+` the weap resource is used as the weapon name in the weaponry section of the
+` status display.
+
+` Note: If you don't create an oütf resource for each weapon type, your ship's
+` weapon load out will be corrupted when you land on a planet. (specifically,
+` Nova will mistakenly remove any weapons for which you didn't create oütf
+` resources) Also, having multiple outfit items that bestow the user with the
+` same weapon type can cause weird things to happen.
+
+@type Weapon : "wëap" {
+    template {
+        DWRD Reload;
+        DWRD Count;
+        DWRD MassDmg;
+        DWRD EnergyDmg;
+        DWRD Guidance;
+        DWRD Speed;
+        DWRD AmmoType;
+        DWRD Graphic;
+        DWRD Inaccuracy;
+        DWRD Sound;
+        DWRD Impact;
+        DWRD ExplodType;
+        DWRD ProxRadius;
+        DWRD BlastRadius;
+        HWRD Flags;
+        HWRD Seeker;
+        DWRD SmokeSet;
+        DWRD Decay;
+        DWRD Particles;
+        DWRD PartVel;
+        DWRD PartLifeMin;
+        DWRD PartLifeMax;
+        HLNG PartColor;
+        DWRD BeamLength;
+        DWRD BeamWidth;
+        DWRD Falloff;
+        HLNG BeamColor;
+        HLNG CoronaColor;
+        DWRD SubCount;
+        DWRD SubType;
+        DWRD SubTheta;
+        DWRD SubLimit;
+        DWRD ProxSafety;
+        HWRD Flags2;
+        DWRD Ionization;
+        DWRD HitParticles;
+        DWRD HitPartLife;
+        DWRD HitPartVel;
+        HLNG HitPartColor;
+        DWRD Recoil;
+        DWRD ExitType;
+        DWRD BurstCount;
+        DWRD BurstReload;
+        DWRD JamVuln1;
+        DWRD JamVuln2;
+        DWRD JamVuln3;
+        DWRD JamVuln4;
+        HWRD Flags3;
+        DWRD Durability;
+        DWRD GuidedTurn;
+        DWRD MaxAmmo;
+        DWRD LiDensity;
+        DWRD LiAmplitude;
+        HLNG IonizeColor;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+    };
+
+    ` The number of frames it takes for one of this weapon to reload. 30 = 1
+    ` shot/sec. Smaller numbers yield faster reloads.
+    field("Reload") {
+        Reload;
+    };
+
+    ` The number of frames the weapon's shots travel for before they peter out.
+    ` 30 = 1 second of life.
+    ` Please note that if you've set the weapon to be a beam (Guidance of 0 or
+    ` 3), count is the number of frames the beam stays onscreen. Note also that
+    ` if the beam has a positive Decay value entered (see below) the actual time
+    ` the beam will exist onscreen will be Count + 16 - CoronaFalloff, so adjust
+    ` the Reload value accordingly to ensure that the universe doesn't get
+    ` filled up with overlapping beams from a single ships.
+    field("Count") {
+        Count;
+    };
+
+    ` The next two fields, MassDmg and EnergyDmg, tell Nova how much damage to
+    ` do when one of this weapon's shots hits something. Energy damage does
+    ` damage to shields only, and mass damage does damage to armour only.
+    ` Further, if a ship has shields, its armour can't be damaged until its
+    ` shields are knocked down (unless the weapon is a shield-penetrating
+    ` weapon).
+    field("MassDamage") {
+        MassDmg;
+    };
+
+    field("EnergyDamage") {
+        EnergyDmg;
+    };
+
+    ` The weapon's guidance mode
+    field("Guidance") {
+        Guidance [
+            ` Unguided projectile
+            Unguided = -1,
+
+            ` Beam weapon
+            Beam = 0,
+
+            ` Homing weapon
+            Homing = 1,
+
+            ` Turreted beam
+            TurretedBeam = 3,
+
+            ` Turreted, unguided projectile
+            TurretedUnguided = 4,
+
+            ` Freefall bomb (launched at 80% of the ship's current velocity,
+            ` "weathervanes" into the "wind."
+            Bomb = 5,
+
+            ` Freeflight rocket (launched straight ahead, accelerates to its
+            ` maximum velocity).
+            Rocket = 6,
+
+            ` Front-quadrant turret, (can fire +/-45 deg off the ship's nose),
+            ` fires straight ahead if no target.
+            FrontQuadrantTurret = 7,
+
+            ` Rear-quadrant turret (can fire +/-45 deg off the ship's tail)
+            RearQuadrantTurret = 8,
+
+            ` Point defence turret (fires automatically at incoming guided
+            ` weapons and nearby ships)
+            PointDefenceTurret = 9,
+
+            ` Point defence beam (fires automatically at incoming guided weapons
+            ` and nearby ships)
+            PointDefenceBeam = 10,
+
+            ` Carried ship (AmmoType is the ID of the ship class)
+            CarriedShip = 99
+        ];
+    };
+
+    ` The weapon's speed (pixels per frame * 100)
+    field("Speed") {
+        Speed;
+    };
+
+    ` What kind of ammo the weapon uses
+    ` -1: ignored (unlimited)
+    ` 0-255: Draws ammo from this type of weapon. (Usually, if your Hector
+    `        Cannon was of ID 131, you'd set the AmmoType to 3 so it'd use
+    `        Hector Birdseed Pellets or whatever. However, you could conceivably
+    `        set it to use ammo from another weapon's supply by setting the
+    `        AmmoType to something else.)
+    ` -999: Ship is destroyed when weapon is fired.
+    ` -1000 and below: Weapon uses abs(AmmoType+1000)/10 units of fuel per shot.
+    `                  (example: - 1005 = 0.5 units per shot).
+    field("AmmoType") {
+        AmmoType;
+    };
+
+    ` What graphic set to use for this weapon (from spin resources 3000-3255)
+    field("Graphic") {
+        Graphic as Range<0, 255>;
+    };
+
+    ` The weapon's inaccuracy as it leaves the ship (ignored for guidance-10
+    ` point defence beams). 0 fires straight, 1 and up is an error in degrees
+    field("Inaccuracy") {
+        Inaccuracy;
+    };
+
+    ` Which sound to play when the weapon fires. -1 for silent, 0-63 for
+    ` snd resource IDs 200-263
+    field("Sound") {
+        Sound as Range<-1, 63>;
+    };
+
+    ` The magnitude of the impact when the shot hits something. 0 for no impact,
+    ` 1 and up is an amount which is inversely proportional to the ship's mass.
+    ` (e.g. Missile = 30).
+    ` Please note that if you've set the weapon to be a beam (Guidance of 0 or
+    ` 3), if the impact is set to a negative value, the beam acts as a tractor
+    ` beam. Smaller ships will be pulled towards the firing ship with a strength
+    ` proportional to the Impact value, while a small ship firing a tractor beam
+    ` at a larger ship (or asteroid) will "latch on" to it and be dragged along.
+    ` Note that you cannot enter hyperspace if held by a tractor beam from a
+    ` ship that's larger than you are. Note also that inertialess ships are not
+    ` affected by tractor beams.
+    field("Impact") {
+        Impact;
+    };
+
+    ` Type of explosion to show (0-63) when the stellar is destroyed. You can
+    ` also add 1000 to the value of this field to trigger additional explosions
+    ` of type 0 around the primary explosion. Set to -1 to not show any
+    ` explosion.
+    field("ExplosionType") {
+         ExplodType as Range<-1, 1063> [
+             ` -1 No explosion.
+             NoExplosion = -1
+         ];
+    };
+
+    ` The radius of the weapon's proximity fuse in pixels (useful for unguided
+    ` missiles and bombs). 0 means weapon requires direct hit to do damage.
+    field("ProximityRadius") {
+        ProxRadius;
+    };
+
+    ` The radius of the weapon's blast effect in pixels. 0 means no blast effect
+    field("BlastRadius") {
+        BlastRadius;
+    };
+
+    ` Weapon behavior flags
+    field("Flags") {
+        Flags as Bitmask = 0 [
+            ` Spin the weapon's graphic continuously (rate of frame advance is
+            ` controlled by the BeamWidth field as detailed below).
+            SpinContinuously = 0x0001,
+
+            ` Weapon fired by second trigger.
+            IsSecondary = 0x0002,
+
+            ` For cycling weapons, always start on the first frame of the
+            ` animation.
+            AlwaysStartOnFirstFrame = 0x0004,
+
+            ` For guided weapons, don't fire at fast ships (ships with turn
+            ` rate > 3).
+            DontFireAtFastShips = 0x0008,
+
+            ` Weapon's sound is looped rather than played repeatedly.
+            LoopSound = 0x0010,
+
+            ` Weapon passes through shields (use sparingly!).
+            PassesThroughShields = 0x0020,
+
+            ` Multiple weapons of this type fire simultaneously.
+            FiresSimultaneously = 0x0040,
+
+            ` Weapon can't be targeted by point defence systems (works only for
+            ` homing weapons).
+            CantTargetWithPD = 0x0080,
+
+            ` Weapon's blast doesn't hurt the player.
+            BlastDoesntHurtPlayer = 0x0100,
+
+            ` Weapon generates small smoke.
+            GeneratesSmallSmoke = 0x0200,
+
+            ` Weapon generates big smoke.
+            GeneratesBigSmoke = 0x0400,
+
+            ` Weapon’s smoke trail is more persistent.
+            PersistentSmokeTrail = 0x0800,
+
+            ` Turreted weapon has a blind spot to the front.
+            FrontBlindSpot = 0x1000,
+
+            ` Turreted weapon has a blind spot to the sides.
+            SideBlindSpot = 0x2000,
+
+            ` T urreted weapon has a blind spot to the rear .
+            RearBlindSpot = 0x4000,
+
+            ` Shot detonates at the end of its lifespan (useful for flak-type
+            ` weapons).
+            ShotDetonatesOnExpiry = 0x8000
+        ];
+        Flags2 as Bitmask = 0 [
+            ` For cycling weapons, keep the graphic on the first frame until the
+            ` weapon's ProxSafety count has expired.
+            UseFirstFrameUntilProxTimeout = 0x0001,
+
+            ` For cycling weapons, stop the graphic on the last frame.
+            StopOnLastFrame = 0x0002,
+
+            ` Proximity detonator ignores asteroids.
+            ProximityIgnoresAsteroids = 0x0004,
+
+            ` Proximity detonator is triggered by ships other than the target
+            ` (for guided weapons).
+            ProximityTriggeredByAllShips = 0x0008,
+
+            ` Submunitions fire toward nearest valid target.
+            SubmunitionsSeekNearest = 0x0010,
+
+            ` Don't launch submunitions when the shot expires.
+            NoSubmunitionsOnExpiry = 0x0020,
+
+            ` Don't show weapon's ammo quantity on the status display.
+            NoAmmoQuantityDisplay = 0x0040,
+
+            ` This weapon can only be fired when there is at least one ship of
+            ` this ship's KeyCarried type aboard.
+            OnlyFiresIfShipAboard = 0x0080,
+
+            ` AI ships won't use this weapon.
+            AICantUse = 0x0100,
+
+            ` This weapon uses the ship's weapon sprite, if applicable.
+            UseShipsWeaponSprite = 0x0200,
+
+            ` Weapon is a planet-type weapon, and can only hit planet-type ships
+            ` or destroyable stellars.
+            IsPlanetTypeWeapon = 0x0400,
+
+            ` Don't allow this weapon to be selected or displayed if it is out
+            ` of ammo.
+            DontDisplayIfOutOfAmmo = 0x0800,
+
+            ` Weapon can disable but not destroy.
+            OnlyDisables = 0x1000,
+
+            ` For beam weapons, display the beam underneath ships instead of on
+            ` top of them.
+            DisplayBeamUnderneathShips = 0x2000,
+
+            ` Weapon can be fired while cloaked.
+            FiresWhileCloaked = 0x4000,
+
+            ` Weapon does x10 mass damage to asteroids.
+            X10DamageToAsteroids = 0x8000
+        ];
+        Flags3 as Bitmask = 0 [
+            ` Weapon will only use ammo at the end of a burst cycle.
+            UseAmmoAtEndOfBurst = 0x0001,
+
+            ` Weapon's shots are translucent
+            ShotsAreTranslucent = 0x0002,
+
+            ` Firing ship can't fire another shot of this type until the
+            ` previous one expires or hits something.
+            OnlyOneShotActive = 0x0004,
+
+            ` Weapon fires from whatever weapon exit point is closest to the
+            ` target.
+            FiresFromClosestExit = 0x0010,
+
+            ` Weapon is exclusive - no other weapons on the ship can fire while
+            ` this weapon is firing or reloading.
+            IsExclusive = 0x0020
+        ];
+    };
+
+    ` The next field contains flags that control how a guided weapon
+    ` (Guidance = 1) behaves, as well as some misc flags for other weapon types:
+    field("Seeker") {
+        Seeker as Bitmask = 0 [
+            ` Passes over asteroids
+            PassesOverAsteroids = 0x0001,
+
+            ` Decoyed by asteroids.
+            DecoyedByAsteroids = 0x0002,
+
+            ` Confused by sensor interference.
+            AffectedByInterference = 0x0008,
+
+            ` T urns away if jammed.
+            TurnsAwayIfJammed = 0x0010,
+
+            ` Can't fire if ship is ionized.
+            CantFireIfIonized = 0x0020,
+
+            ` Loses lock if target not directly ahead.
+            LosesLockOffBore = 0x4000,
+
+            ` May attack parent ship if jammed.
+            AttacksParentIfJammed = 0x8000
+        ];
+    };
+
+    ` Which cicn set to use for this weapon’s smoke trail, if any. 0 = cicn's
+    ` 1000- 1007, 1 = 1008-1015, etc. Note that the smoke icons themselves can
+    ` be any size, but if you use ResEdit's cicn editor to make each icon only
+    ` as large as it needs to be, game performance will likely improve
+    field("SmokeSet") {
+        SmokeSet;
+    };
+
+    ` How fast to decay each shot's power. -1 or 0 means ignored, 1 and up
+    ` means remove one point of mass & energy damage every time this number of
+    ` frames goes by (1 frame = 1/30 sec.).
+    ` Please note that if you've set the weapon to be a beam (Guidance of 0 or
+    ` 3), if Decay is greater than zero, the beam will "shrink" before it
+    ` disappears from the screen. The actual time the beam spends on screen will
+    ` be Count + 16 - CoronaFalloff in this case, so adjust your Reload value
+    ` accordingly (otherwise you'll get too many beams onscreen at once).
+    field("Decay") {
+        Decay;
+    };
+
+    ` Number of particles to generate per frame. Set to zero for no particles.
+    field("Particles") {
+        Particles;
+    };
+
+    ` Particle velocity, from 1 to about 200 or so. Experiment to find useful
+    ` values.
+    field("ParticleVelocity") {
+        PartVel;
+    };
+
+    ` Minimum life of a particle from this weapon, in frames.
+    field("ParticleLifeMin") {
+        PartLifeMin;
+    };
+
+    ` Maximum particle life, in frames.
+    field("ParticleLifeMax") {
+        PartLifeMax;
+    };
+
+    ` Particle base colour, encoded the same as HTML colours. (RRGGBB).
+    field("ParticleColor") {
+        PartColor;
+    };
+
+    ` The length of the beam created by this weapon, if applicable.
+    field("BeamLength") {
+        BeamLength;
+    };
+
+    ` Beam width (actually, radius) in pixels. A BeamWidth of 0 will have no
+    ` centre beam, just corona glow.
+    ` Note: Lightning beams require a BeamWidth or 1 or greater.
+    ` Note: For sprite-based weapons that spin continuously, this field
+    ` controls the time between frames, in 30ths of a second.
+    field("BeamWidth") {
+        BeamWidth;
+    };
+
+    ` The corona falloff. Higher numbers make the corona fall off faster. This
+    ` value must be between 2 and 16. (since lightning beams have no corona,
+    ` this is ignored for lightning beams)
+    field("Falloff") {
+        Falloff;
+    };
+
+    ` The colour of the beam centre, encoded as a 24-bit RGB value (00RRGGBB).
+    field("BeamColor") {
+        BeamColor;
+    };
+
+    ` The colour of the beam corona, encoded as a 24-bit RGB value. Note that
+    ` since the corona is translucent, it will appear approximately half as
+    ` bright atits maximum as what you specify in this field. (since lightning
+    ` beams have no corona, this is ignored for lightning beams)
+    field("CoronaColor") {
+        CoronaColor;
+    };
+
+    ` The number of submunitions to create when the shot reaches the end of its
+    ` life or detonates because something wanders into its proximity radius. Set
+    ` to 0 or -1 if unused.
+    field("SubmunitionCount") {
+        SubCount;
+    };
+
+    ` The resource ID of the weapon type to create as submunitions. Anything
+    ` except beams and fighters is handled.
+    field("SubmunitionType") {
+        SubType;
+    };
+
+    ` The angular error of the submunitions as they are launched, as expressed
+    ` in degrees error from the carrier weapons' heading.
+    field("SubmunitionTheta") {
+        SubTheta;
+    };
+
+    ` If you have defined a recursively-submunitioning weapon (i.e. one which
+    ` splits into more copies of itself) this field will allow you to limit the
+    ` number of recursive splits that happen. This field is ignored if the
+    ` weapon is not recursively submunitioning.
+    field("SubmunitionLimit") {
+        SubLimit;
+    };
+
+    ` A time delay for the weapon's proximity fuse, in 30ths of a second. Set
+    ` to zero for immediate arming on launch.
+    field("ProximitySafety") {
+        ProxSafety;
+    };
+
+    ` The amount of ionization energy to add to the ship that gets hit by this
+    ` weapon. When a ship is ionized it becomes nearly immobilized until the
+    ` ionization charge dissipates.
+    field("Ionization") {
+        Ionization;
+    };
+
+    ` The number of particles to generate when a shot of this type hits a ship
+    ` or asteroid. Set to zero if unused.
+    field("HitParticles") {
+        HitParticles;
+    };
+
+    ` The average life (in frames) of the hit-particles.
+    field("HitParticleLife") {
+        HitPartLife;
+    };
+
+    ` The speed of the hit-particles; a value of 100 is one pixel per frame.
+    field("HitParticleVelocity") {
+        HitPartVel;
+    };
+
+    ` The colour of the hit-particles, encoded as a 24-bit HTML colour (00RRGGBB)
+    field("HitParticleColor") {
+        HitPartColor;
+    };
+
+    ` The amount of recoil force to apply to the firing ship when this weapon is
+    ` used:
+    ` 0 or -1: no recoil
+    ` positive values: Thrust the ship backwards
+    ` negative values: Thrust the ship forwards (note that the resulting change
+    `                  to the ship's velocity is inversely proportional to its
+    `                  mass)
+    field("Recoil") {
+        Recoil;
+    };
+
+    ` The type of weapon exit point to use for this weapon:
+    ` -1: ignored, weapon fires from centre of ship
+    ` 0: GunPosX/Y
+    ` 1: TurretPosX/Y
+    ` 2: GuidedPosX/Y
+    ` 3: BeamPosX/Y
+    field("ExitType") {
+        ExitType;
+    };
+
+    ` The number of shots this weapon can fire before having to endure a burst
+    ` reload. Set to 0 or -1 if unused. For weapons that do not fire
+    ` simultaneously, this value will be multiplied by how many of this weapon
+    ` the firing ship has - for example, a weapon with a BurstCount of 4 on a
+    ` ship with 3 of that weapon will be able to fire 12 times before entering
+    ` the burst reload period. For weapons that fire simultaneously, this value
+    `  is independent of how many of the weapon the ship has.
+    field("BurstCount") {
+        BurstCount;
+    };
+
+    ` The reload time that is imposed when the weapon has fired >= BurstCount
+    ` shots. Ignored if BurstCount is 0 or -1.
+    field("BurstReload") {
+        BurstReload;
+    };
+
+    ` The weapon's vulnerability to the four different types of jamming, from 0
+    ` to 100%. Ignored if the weapon is not a guided weapon.
+    field("JamVulnerability") repeatable<1, 4> {
+        JamVuln<$FieldNumber> as Range<0%, 100%> = 0%;
+    };
+
+    ` For guided weapons, this is how many point defence hits a shot from this
+    ` weapon can take before it is destroyed. Set to 0 for weapons that are
+    ` immediately destroyed by any PD hits. Ignored for non-guided projectile
+    ` weapons or beams. (PD damage to guided weapons is calculated as 100% of
+    ` mass damage plus 50% of energy damage).
+    field("Durability") {
+        Durability;
+    };
+
+    ` For guided weapons, this is the turning speed of the weapon. Higher values
+    ` yield more manoeuvrable missiles. Ignored for anything but guided weapons.
+    field("GuidedTurn") {
+        GuidedTurn;
+    };
+
+    ` For ammo-using weapons, this is the maximum amount of ammo per each
+    ` instance of this weapon. (so, if you have two of these weapons, the max
+    ` amount of ammo for that weapon type would actually be twice MaxAmmo, and
+    ` so on) Set to 0 or -1 if you want the ammo quantity to be constrained by
+    ` the oütf resource's Max field instead.
+    field("MaxAmmo") {
+        MaxAmmo;
+    };
+
+    ` For a beam weapon, entering zero in this field will make it a normal,
+    ` straight beam weapon. Entering a value greater than zero will make the
+    ` beam a lightning beam, which has no real effect other than to make it look
+    ` cool. The number you enter here is the number of zigzags the beam will
+    ` make per 100 pixels. Higher numbers yield more convoluted beams. Note also
+    ` that lightning beams can't have a beam corona, and so will only use the
+    ` CoreColor and CoreWidth fields above.
+    field("LightningDensity") {
+        LiDensity;
+    };
+
+    ` The amplitude of each zigzag of a lightning beam, in pixels. Higher
+    ` numbers yield more jagged-looking beams. Don't overdo this or you will
+    ` have screen redraw problems. In fact, don't overuse lightning beams
+    ` period, as they are much more processor-intensive to draw than normal
+    ` beams!
+    field("LightningAmplitude") {
+        LiAmplitude;
+    };
+
+    ` The colour that a ship hit by this weapon will appear after being
+    ` sufficiently ionized (encoded the same as an HTML colour value). A value
+    ` of 0 here will be interpreted as a default bluish colour. Using fairly
+    ` bright colours here is probably the best, as low-intensity colours tend
+    ` to look odd when used as the ionization colour.
+    field("IonizeColor") {
+        IonizeColor;
+    };
+};

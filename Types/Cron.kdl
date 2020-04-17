@@ -1,0 +1,200 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` Cron resources are used to define time-dependent events that occur in a manner
+` that is invisible to the player but can cause interesting things to happen in
+` the universe, via the manipulation of control bits. With it, you can create
+` such things as:
+` - an event that occurs periodically during the course of the game;
+` - an event that occurs at some fixed date during the game, as part of the
+`   story's set script;
+` - an event, triggered by the actions of the player, that occurs after some
+`   fixed or random interval;
+` - etc.
+
+` Notes:
+` - Setting any of the date fields to 0 or -1 effectively makes that field a
+`   wildcard field, which will match to anything.
+` - If you want an event with a wide possible date range to be guaranteed to
+`   never run more than once, make it set a control bit in its OnEnd script that
+`   will prevent it from subsequently being eligible for activation.
+` - The 'M' and 'N' control bit set string operators should probably not be used
+`   in conjunction with cron events, unless you really want to confuse the
+`   player by moving them around at seemingly random times.
+` - Local news always takes precedence over independent news, even if there is
+`   no corresponding news string to display (the STR# ID must still be greater
+`   than zero to not be ignored). You can use this to make everyone in the
+`   universe except a particular government or set of governments report on
+`   something, for example.
+
+@type Cron : "crön" {
+    template {
+        DWRD FirstDay;
+        DWRD FirstMonth;
+        DWRD FirstYear;
+        DWRD LastDay;
+        DWRD LastMonth;
+        DWRD LastYear;
+        DWRD Random;
+        DWRD Duration;
+        DWRD PreHoldoff;
+        DWRD PostHoldoff;
+        DWRD IndNewsStr;
+        HWRD Flags;
+        C0FF EnableOn;
+        C0FF OnStart;
+        C100 OnEnd;
+        HLNG Contrib1;
+        HLNG Contrib2;
+        HLNG Require1;
+        HLNG Require2;
+        DWRD NewsGovt1;
+        DWRD NewsGovt2;
+        DWRD NewsGovt3;
+        DWRD NewsGovt4;
+        DWRD GovtNewsStr1;
+        DWRD GovtNewsStr2;
+        DWRD GovtNewsStr3;
+        DWRD GovtNewsStr4;
+    };
+
+    ` The first date on which the cron event can be activated. If the day is set
+    ` to 0 or -1, only the month and year will be considered. If the month is
+    ` set to 0 or -1, the month will be ignored. If the year is set to 0 or -1,
+    ` the year will be ignored.
+    field("FirstDate") {
+        FirstDay as Range<-1, 31> = -1;
+        FirstMonth as Range<-1, 12> = -1;
+        FirstYear = -1;
+    };
+
+    ` The last date on which the cron event can be activated. If the day is set
+    ` to 0 or -1, only the month and year will be considered. If the month is
+    ` set to 0 or -1, the month will be ignored. If the year is set to 0 or -1,
+    ` the year will be ignored.
+    field("LastDate") {
+        LastDay as Range<-1, 31> = -1;
+        LastMonth as Range<-1, 12> = -1;
+        LastYear = -1;
+    };
+
+    ` The percent chance that the cron event will be activated during the date
+    ` range defined above. Set to 100 for the event to be activated as soon as
+    ` it can be.
+    field("Random") {
+        Random as Range<0%, 100%>;
+    };
+
+    ` The duration during which the event is active, in days. If this is set to
+    ` zero, the event will start and end on the same day, i.e. its OnStart and
+    ` OnEnd scripts will be run at the same time.
+    field("Duration") {
+        Duration;
+    };
+
+    ` The number of days to "hold" the event in a waiting state after it is
+    ` activated and before it starts. Set this to zero to have the event start
+    ` immediately when it is activated.
+    field("PreHoldoff") {
+        PreHoldoff = 0;
+    };
+
+    ` The number of days to hold the event in a waiting state after it ends and
+    ` before it is deactivated. This is used to keep a repeating event from
+    ` being activated immediately after it has just happened. Set this to zero
+    ` to have the event be deactivated immediately after it ends.
+    field("PostHoldoff") {
+        PostHoldoff = 0;
+    };
+
+    ` The ID of a STR# resource from which to randomly select a string to be
+    ` displayed in the news dialog while this cron event is in progress, if it
+    ` doesn't have any applicable local news. Set to -1 for no independent
+    ` news.
+    field("IndNewsStr") {
+        IndNewsStr = -1;
+    };
+
+    field("Flags") {
+        Flags as Bitmask [
+            ` Continuous, iterative cron entry - keep evaluating the cron's
+            ` OnStart field until the EnableOn expression is no longer true or
+            ` the constraints of the Require fields are no longer met. This can
+            ` create infinite loops, so be careful!
+            ContinuousEntry = 0x0001,
+
+            ` Continuous, iterative cron exit - keep evaluating the cron's
+            ` OnExit field until the EnableOn expression is no longer true or
+            ` the constraints of the Require fields are no longer met. This can
+            ` create infinite loops, so be careful!
+            ContinuousExit = 0x0002
+        ];
+    };
+
+    ` A control bit test string that is used to determine whether the cron event
+    ` is eligible to be activated or not. Leave this blank if you are creating
+    ` an event whose activation doesn't depend on the state of any control bits.
+    field("EnableOn") {
+        EnableOn = "";
+    };
+
+    ` A control bit set string that is called when the cron event starts, after
+    ` waiting through the PreHoldoff time, if any.
+    field("OnStart") {
+        OnStart = "";
+    };
+
+    ` A control bit set string that is called when the cron event ends.
+    field("OnEnd") {
+        OnEnd = "";
+    };
+
+    ` When the cron event is active, these two Contribute fields together form
+    ` a 64-bit flag that is subsequently combined with the Contribute fields
+    ` from the player's ship and the other outfit items in the player's
+    ` possession, to be used with the Require fields in the outf and misn
+    ` resources.
+    field("Contrib") {
+        Contrib1 = 0;
+        Contrib2 = 0;
+    };
+
+    ` These two Require fields together form a 64-bit flag that is logically
+    ` and'ed with the Contribute fields from the player's current ship and
+    ` outfit items. Unless for each 1 bit in the Require fields there is a
+    ` matching 1 bit in one or more of the Contribute fields, the cron will not
+    ` be activated. Leave these set to zero if unused.
+    field("Require") {
+        Require1 = 0;
+        Require2 = 0;
+    };
+
+    ` On planets or stations that are allied with the government whose ID is
+    ` given by one of the NewsGovt fields, a string will be randomly selected
+    ` from the STR# resource whose ID is given by the corresponding
+    ` GovtNewsStr field, and will be displayed as news while the cron event is
+    ` active. This allows you to let up to four different governments (and their
+    ` allies) have their own "local news" for a given cron event. Set unused
+    ` NewsGovt and GovtNewsStr fields to -1.
+    field("News") repeatable<1, 4> {
+        NewsGovt<$FieldNumber> as Government& = #-1;
+        GovtNewsStr<$FieldNumber> = -1;
+    };
+};

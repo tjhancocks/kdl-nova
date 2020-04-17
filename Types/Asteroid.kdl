@@ -1,0 +1,132 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` Nova supports up to 16 asteroid types, each of which can have its own special
+` properties. röid resources 128-143 store the attributes for each asteroid
+` type.
+@type Asteroid : "röid" {
+    template {
+        DWRD Strength;
+        DWRD SpinRate;
+        DWRD YieldType;
+        DWRD YieldQty;
+        DWRD PartCount;
+        HLNG PartColor;
+        DWRD FragType1;
+        DWRD FragType2;
+        DWRD FragCount;
+        DWRD ExplodeType;
+        DWRD Mass;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+    };
+
+    ` Asteroid resources must have an ID of #128 to #143.
+    assert($id >= #128, $id <= #143);
+
+    ` The strength of this asteroid type - this is equivalent to armour values
+    ` for ships.
+    field("Strength") {
+        Strength;
+    };
+
+    ` The frame advance rate of this asteroid type. A value of 100 is 30 frames
+    ` per second (quite fast) - lower numbers are slower.
+    field("SpinRate") {
+        SpinRate;
+    };
+
+    ` Defines what the resource-boxes which are ejected from this asteroid type
+    ` will contain
+    ` 0-5 This type of standard cargo.
+    ` 1000-1127 This type of jünk resource.
+    field("YieldType") {
+        YieldType as Junk& [
+            Food = 0,
+            Industrial = 1,
+            MedicalSupplies = 2,
+            LuxuryGoods = 3,
+            Metal = 4,
+            Equipment = 5
+        ];
+    };
+
+    ` The average resource yield of this type of asteroid. Zero will cause
+    ` asteroids of this type to not spit out any resource-boxes when destroyed;
+    ` values of one or more will cause the asteroids to spit out approximately
+    ` that number of resource-boxes (+/- 50%) when destroyed. Each resource-box
+    ` is worth 1 unit of whatever cargo is defined in the YieldType field to be
+    ` granted when a scoop-equipped ship runs over it.
+    field("YieldQty") {
+        YieldQty;
+    };
+
+    ` The number of particles that are thrown off when an asteroid of this type
+    ` is destroyed.
+    field("ParticleCount") {
+        PartCount;
+    };
+
+    ` The color of the particles, encoded the same as HTML colours. (00RRGGBB)
+    field("ParticleColor") {
+        PartColor;
+    };
+
+    ` Asteroids can break up into some number of sub-asteroids when destroyed.
+    ` If both of these fields are used, Nova will randomly pick between them for
+    ` each sub-asteroid that is created. If only one is used, all sub-asteroids
+    ` will be of that type.
+    field("FragmentType") repeatable<1, 2> {
+        FragType<$FieldNumber> as Asteroid& = #-1 [
+            ` -1 No sub-asteroids.
+            NoSubAsteroids = #-1
+
+            ` 128-143 Generate this type of sub-asteroid.
+        ];
+    };
+
+    ` The average number of sub-asteroids (+/- 50%) to be generated when an
+    ` asteroid of this type is destroyed (zero for none).
+    field("FragmentCount") {
+        FragCount;
+    };
+
+    ` Type of explosion to show (0-63) when an asteroid of this type is
+    ` destroyed. You can also add 1000 to the value of this field in the same
+    ` manner as the ExplodeType field in the wëap resource. Set to -1 to not
+    ` show any explosion.
+    field("ExplosionType") {
+        ExplodeType as Range<-1, 1063> [
+            ` -1 No explosion.
+            NoExplosion = -1
+        ];
+    };
+
+    ` Mass of this asteroid type (used when weapons hit asteroids).
+    field("Mass") {
+        Mass;
+    };
+};
