@@ -1,0 +1,743 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` Missions are the crown jewel of the Nova datafile, as well as the largest and
+` most complex resources in the game. Each misn resource corresponds to a single
+` mission that the player can undertake, with the name of the mission (which the
+` player sees in the mission list) being the name of the associated misn
+` resource.
+
+@type Mission : "mïsn" {
+    template {
+        DWRD AvailStel;
+        DWRD _;
+        DWRD AvailLoc;
+        DWRD AvailRecord;
+        DWRD AvailRating;
+        DWRD AvailRandom;
+        DWRD TravelStel;
+        DWRD ReturnStel;
+        DWRD CargoType;
+        DWRD CargoQty;
+        DWRD PickupMode;
+        DWRD DropoffMode;
+        HWRD ScanMask;
+        DWRD _;
+        DLNG PayVal;
+        DWRD ShipCount;
+        DWRD ShipSyst;
+        DWRD ShipDude;
+        DWRD ShipGoal;
+        DWRD ShipBehav;
+        DWRD ShipNameID;
+        DWRD ShipStart;
+        DWRD CompGovt;
+        DWRD CompReward;
+        DWRD ShipSubtitle;
+        DWRD BriefText;
+        DWRD QuickBrief;
+        DWRD LoadCargText;
+        DWRD DropCargText;
+        DWRD CompText;
+        DWRD FailText;
+        DWRD TimeLimit;
+        DWRD CanAbort;
+        DWRD ShipDoneText;
+        DWRD _;
+        DWRD AuxShipCount;
+        DWRD AuxShipDude;
+        DWRD AuxShipSyst;
+        DWRD _;
+        HWRD Flags;
+        HWRD Flags2;
+        DWRD _;
+        DWRD _;
+        DWRD RefuseText;
+        DWRD AvailShipTyp;
+        C0FF AvailBits;
+        C0FF OnAccept;
+        C0FF OnRefuse;
+        C0FF OnSuccess;
+        C0FF OnFailure;
+        C0FF OnAbort;
+        HLNG Require1;
+        HLNG Require2;
+        DWRD DatePostInc;
+        C0FF OnShipDone;
+        C020 AcceptButton;
+        C021 RefuseButton;
+        DWRD DispWeight;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+    };
+
+    ` Which stellar objects (i.e. planets) the mission is available at.
+    ` -1: Any inhabited stellar.
+    ` 128-2175: ID number of a specific stellar .
+    ` 5000-7047: Stellar in a system adjacent to specific system.
+    ` 9999-10255: Specific govt's stellar
+    ` 15000-15255: Specific govt's ally's stellar
+    ` 20000-20255: Stellar of anybody but this specific govt
+    ` 25000-25255: Specific govt's enemy's stellar
+    ` 30000-30255: Stellar of specific govt or any of its class mates
+    ` 31000-31255: Stellar not of specific govt nor of any of its class mates
+    field("AvailableStellar") {
+        AvailStel [ AnyInhabited = -1 ];
+    };
+
+    ` Where on a planet this mission is available
+    field("AvailableLocation") {
+        AvailLoc [
+            MissionComputer = 0,
+            Bar = 1,
+
+            ` Offered from ship (must set up associated përs resource as well)
+            OfferedFromShip = 2,
+
+            Spaceport = 3,
+            Trading = 4,
+            Shipyard = 5,
+            Outfit = 6
+        ];
+    };
+
+    ` What your legal record in this system must be for this mission to become
+    ` available.
+    field("AvailableRecord") {
+        AvailRecord [
+            ` Any record
+            Ignored = 0,
+
+            ` Positive value: record must be at least this high
+            ` Negative value: record must be at least this low
+
+            ` When the player has dominated the stellar in question
+            DominatedThisStellar = -32000,
+
+            ` When the player has dominated at least one stellar
+            DominatedAnyStellar = -32001
+        ];
+    };
+
+    ` What your combat rating must be for this mission to be available
+    field("AvailableRating") {
+        AvailRating [ Ignored = -1 ];
+    };
+
+    ` A randomization factor, to ensure that some missions aren't available all
+    ` the time. Mission randomizing values are recalculated each time you warp
+    ` into a system.
+    field("AvailableChance") {
+        AvailRandom as Range<1%, 100%>;
+    };
+
+    ` Which stellar object the player must go to during the mission
+    ` -1: no specific destination
+    ` -2: a random inhabited stellar
+    ` -3: a random uninhabited stellar
+    ` 128-2175: ID number of a specific stellar (note that the mission travel
+    `           objectives will also be fulfilled when landing on a duplicate
+    `           stellar that has the identical name and coordinates to the
+    `           stellar you specify here)
+    ` 9999-10255: Random stellar of a specific govt
+    ` 15000-15255: Random stellar of a specific govt's ally
+    ` 20000-20255: Random stellar of anybody but this specific govt
+    ` 25000-25255: Random stellar of specific govt's enemy
+    ` 30000-30255: Random stellar of specific govt or any of its class mates
+    ` 31000-31255: Random stellar not of specific govt nor of any of its class
+    `              mates
+    field("TravelStellar") {
+        TravelStel [
+            NoDestination = -1,
+            RandomInhabited = -2,
+            RandomUninhabited = -3
+        ];
+    };
+
+    ` Where the player must return to in order to complete the mission and
+    ` receive payment
+    ` -1: no specific destination
+    ` -2: a random inhabited stellar
+    ` -3: a random uninhabited stellar
+    ` -4 : The initial stellar, where the mission was accepted
+    ` 128-2175: ID number of a specific stellar (note that the mission will also
+    `           complete when landing on a duplicate stellar that has the
+    `           identical name and coordinates to the stellar you specify here)
+    ` 9999-10255: Random stellar of a specific govt
+    ` 15000-15255: Random stellar of a specific govt's ally
+    ` 20000-20255: Random stellar of anybody but this specific govt
+    ` 25000-25255: Random stellar of specific govt's enemy
+    ` 30000-30255: Random stellar of specific govt or any of its class mates
+    ` 31000-31255: Random stellar not of specific govt nor of any of its class
+    `              mates
+    field("ReturnStellar") {
+        ReturnStel  [
+            NoDestination = -1,
+            RandomInhabited = -2,
+            RandomUninhabited = -3,
+            InitialStellar = -4
+        ];
+    };
+
+    ` Note: When Nova selects a random mission destination, it attempts to
+    ` ensure that the random destination is: a) more than two hyper jumps away
+    ` from the system where the mission is being offered, and b) a stellar which
+    ` is guaranteed to always exist throughout the course of the game,
+    ` regardless of system swapping. This means that if you have multiple
+    ` systems that occupy the same coordinates at different times in the game
+    ` and not all of them contain stellar object X, no missions will use stellar
+    ` object X as their random destination. (This is to keep the player from
+    ` accepting a mission with a random destination that might cease to exist
+    ` before he gets there!) A further important consequence of this restriction
+    ` is that if Nova detects that a mission whose TravelStel or ReturnStel is
+    ` to be randomly selected will violate this rule, it will be prevented from
+    ` being offered regardless of any other availability parameters the mission
+    ` might have - i.e. if you create a mission and Nova refuses to make it
+    ` available, check the debug log to see if the mission couldn't find a
+    ` suitable nontransient random stellar of the desired characteristics.
+
+    ` What type of cargo must be carried, and how much of it
+    ` Types:
+    ` -1: No special cargo for this mission
+    ` 0-255: specific cargo type
+    ` 1000: Random cargo of types 0-5 (the standard types)
+    ` Quantity:
+    ` -1: No cargo
+    ` 0 and up: this many tons of cargo
+    ` -2 and below: abs(CargoQty) tons, +/- 50%
+    field("Cargo") {
+        CargoType [
+            NoCargo = -1,
+            RandomStandardCargo = 1000
+        ];
+
+        CargoQty [ Ignored = -1 ];
+    };
+
+    ` Where the cargo is to be picked up.
+    field("PickupMode") {
+        PickupMode [
+            Ignored = -1,
+            PickupAtStart = 0,
+            PickupAtTravelStellar = 1,
+            PickupWhenBoardingShip = 2
+        ];
+    };
+
+    ` Where the cargo is to be dropped off. Note that DropOffMode 1 will only
+    ` cause cargo to be dropped off if the cargo was picked up previously, and
+    ` then only if the mission's special ship goal has been completed or the
+    ` mission has no special ship goal.
+    ` Don't set your cargo to be picked up and dropped off at the same place, as
+    ` it may cause Nova to behave strangely.
+    field("DropoffMode") {
+        DropoffMode [
+            Ignored = -1,
+            DropoffAtTravelStellar = 0,
+            DropoffAtReturnStellar = 1
+        ];
+    };
+
+    ` Used to determine which governments consider your cargo illegal. If any of
+    ` the 1 bits in this field match any of the 1 bits in a government's
+    ` ScanMask field, that govt will consider this mission's cargo illegal. Set
+    ` to zero if unused.
+    field("ScanMask") {
+        ScanMask = 0;
+    };
+
+    ` What you get if you're successful and you return to ReturnStel.
+    ` 0 or -1: no payment
+    ` 1 and up: This number of credits
+    ` -10128 to -10383: Clean legal record with the govt with this ID
+    ` -20128 to -20383: Clean legal record with the govt with this ID and all
+    `                   its allies
+    ` -30128 to -30383: Clean legal record with the govt with this ID and all
+    `                   its classmates
+    ` -40001 to -40099: Take away this % of the player's cash (-40001 = 1% etc)
+    ` -50000 and down: Take away this number of credits at the mission start
+    `                  (-50000 = 0, -50001 = 1 etc)
+    field("PayValue") {
+        PayVal [ NoPay = 0 ];
+    };
+
+    ` The number of special ships for this mission (-1 for no ships)
+    field("SpecialShipCount") {
+        ShipCount as Range<-1, 31> [ NoShips = -1 ];
+    };
+
+    ` Which system the special ships will appear in
+    ` -1: The initial system where the mission is begun
+    ` -2: Any random system
+    ` -3: TravelStel's system
+    ` -4: ReturnStel's system
+    ` -5: System adjacent to initial system
+    ` -6: Whatever system the player is in (i.e. follows the player around)
+    ` 128-2175: ID number of a specific system
+    ` 9999-10255: Specific govt's system
+    ` 15000-15255: System of a specific govt's ally
+    ` 20000-20255: System of anybody but this specific govt
+    ` 25000-25255: System of specific govt's enemy
+    ` 30000-30255: System of specific govt or any of its class mates
+    ` 31000-31255: System not of specific govt nor of any of its class mates
+    field("SpecialShipSystem") {
+        ShipSyst [
+            Initial = -1,
+            Random = -2,
+            TravelStellar = -3,
+            ReturnStellar = -4,
+            Adjacent = -5,
+            FollowsPlayer = -6
+        ];
+    };
+
+    ` What ship class to use to determine the special ship's types and
+    ` characteristics.
+    field("SpecialShipClass") {
+        ShipDude as ShipClass& = NoShips [ NoShips = #-1 ];
+    };
+
+    ` The mission goal associated with the special ships
+    field("SpecialShipGoal") {
+        ShipGoal [
+            ` Ignored (no specific goal for the special ships)
+            NoGoal = -1,
+
+            ` Destroy all the ships
+            DestroyAll = 0,
+
+            ` Disable but don't destroy them
+            DisableAll = 1,
+
+            ` Board them
+            Board = 2,
+
+            ` Escort them (keep them from getting killed)
+            Escort = 3,
+
+            ` Observe them (for ships that can cloak, at least one must be
+            ` visible onscreen - for ships that cannot cloak, the player must
+            ` merely be in the same system as them)
+            Observe = 4,
+
+            ` Rescue them (they start out disabled and stay that way until you
+            ` board them; to make a rescue mission where the ship stays
+            ` disabled, give the special ships a govt with the "always
+            ` disabled" flag set).
+            Rescue = 5,
+
+            ` Chase them off (either kill them or scare the into jumping out of
+            ` the system).
+            ChaseAway = 6
+        ];
+    };
+
+    ` Defines any special actions you want the ships to take.
+    field("SpecialShipBehavior") {
+        ShipBehav [
+            ` Ignored (they use their standard AI routines).
+            Standard = -1,
+
+            ` Special ships will always attack the player.
+            AttackPlayer = 0,
+
+            ` Special ships will protect the player.
+            ProtectPlayer = 1,
+
+            ` Special ships will attempt to destroy enemy stellars.
+            AttackEnemyStellars = 2
+        ];
+    };
+
+    ` Tells Nova how to name the special ships.
+    ` -1: Ignored (special ships have normal names).
+    ` 128 and up: Pick a name from this STR# resource.
+    field("SpecialShipNameID") {
+        ShipNameID [ Ignored = -1 ];
+    };
+
+    ` Defines where in the system the ships will start.
+    ` Note that a ShipStart value of 0 (appear randomly in the system) is the
+    ` proper value to use in conjunction with përs resource flag 0x0040.
+    field("SpecialShipStart") {
+        ShipStart [
+            ` Appear on top of nav default 4
+            NavDefault4 = -4,
+
+            ` Appear on top of nav default 3
+            NavDefault3 = -3,
+
+            ` Appear on top of nav default 2
+            NavDefault2 = -2,
+
+            ` Appear on top of nav default 1
+            NavDefault1 = -1,
+
+            ` Appear randomly in the system (as usual)
+            Random = 0,
+
+            ` Jump in from hyperspace after a short delay
+            JumpIn = 1,
+
+            ` Appear randomly, cloaked
+            RandomCloaked = 2
+        ];
+    };
+
+    ` Which government to use in determining how your record changes on
+    ` completing this mission, and how much your record should change.
+    ` Note: if you have a CompGovt and reward defined and you fail the mission,
+    ` that govt will take it personally and decrease your record by 1/2 the
+    ` amount specified in CompReward. This is useful for making missions whose
+    ` success is considered vital by a certain party.
+    field("CompletionGovernment") {
+        CompGovt as Government& = Ignored [ Ignored = #-1 ];
+        CompReward = 0;
+    };
+
+    ` Tells Nova which subtitle, if any, to use for the special ships.
+    ` -1: Ignored (special ships have normal subtitles).
+    ` 128 and up: Pick a subtitle from this STR# resource.
+    field("ShipSubtitle") {
+        ShipSubtitle [ Ignored = -1 ];
+    };
+
+    ` The desc to show in the dialog that comes up when you accept a mission.
+    ` (formats are the same for all seven fields).
+    field("BriefText") {
+        BriefText as Description& [ Ignored = #-1 ];
+    };
+
+    ` The desc to show when the user hits the "Mission Briefing" (I) key.
+    field("QuickBriefText") {
+        QuickBrief as Description& [ Ignored = #-1 ];
+    };
+
+    ` The desc to show when special mission cargo is loaded from a planet.
+    field("LoadCargoText") {
+        LoadCargText as Description& [ Ignored = #-1 ];
+    };
+
+    ` The desc to show when special mission cargo is offloaded
+    field("DropoffCargoText") {
+        DropCargText as Description& [ Ignored = #-1 ];
+    };
+
+    ` The desc to show when you go to ReturnStel and the mission has been
+    ` successful.
+    field("CompletionText") {
+        CompText as Description& [ Ignored = #-1 ];
+    };
+
+    ` The desc to show when you go to ReturnStel and the mission has been a
+    ` failure.
+    field("FailureText") {
+        FailText as Description& [ Ignored = #-1 ];
+    };
+
+    ` Mission time limit
+    field("TimeLimit") {
+        TimeLimit [ Ignored = -1 ];
+    };
+
+    ` Whether or not the player can abort the mission
+    field("CanAbort") {
+        CanAbort [
+            No = 0,
+            Yes = 1
+        ];
+    };
+
+    ` The desc to show when you complete the special ship goal.
+    field("SpecialShipDoneText") {
+        ShipDoneText as Description& [ Ignored = #-1 ];
+    };
+
+    ` The next few fields tell Nova about any auxiliary ships you want to be
+    ` placed in the universe for this mission. Auxiliary ships cannot be given
+    ` specific instructions, and no goals can be set for them; they simply are
+    ` "normal" ships that are placed into the universe for the purpose of
+    ` adding atmosphere to mission.
+
+    ` How many aux ships, if any, to activate for this mission:
+    field("AuxShipCount") {
+        AuxShipCount as Range<-1, 31> [ NoShips = -1 ];
+    };
+
+    field("AuxShipClass") {
+        AuxShipDude as ShipClass& = NoShips [ NoShips = #-1 ];
+    };
+
+    ` Which system the aux ships will appear in
+    ` -1: Whatever system the player is in (i.e. follows the player around)
+    ` -2: TravelStel's system
+    ` -3: ReturnStel's system
+    ` 128-2175: ID number of a specific system
+    ` 5000-7047: In this system, or any systems adjacent to it
+    ` 9999-10255: Specific govt's system
+    ` 15000-15255: System of a specific govt's ally
+    ` 20000-20255: System of anybody but this specific govt
+    ` 25000-25255: System of specific govt's enemy
+    ` 30000-30255: System of specific govt or any of its class mates
+    ` 31000-31255: System not of specific govt nor of any of its class mates
+    field("AuxShipSystem") {
+        AuxShipSyst [
+            FollowsPlayer = -1,
+            TravelStellar = -2,
+            ReturnStellar = -3
+        ];
+    };
+
+    ` Some misc. flag bits
+    field("Flags") {
+        Flags = 0 [
+            ` Marks the mission as an auto-aborting mission, which will
+            ` automatically abort itself after it is accepted. (sometimes useful
+            ` to create special ships) Any control bits pointed to by the
+            ` mission’s CompBitSet fields will be automatically set when the
+            ` mission aborts.
+            ` Note: there must be special ships associated with the mission to
+            ` trigger the auto-abort. If the mission is one in which a special
+            ` ship replaces a përs ship at mission start (such as for a "rescue
+            ` disabled ship" mission) and the SpecialShipGoal is 2 or 5 (board
+            ` or rescue) the mission will auto- abort after the special ship is
+            ` boarded.
+            AutoAbort = 0x001,
+
+            ` Don’t show the red destination arrows on the map.
+            DontShowDestinationArrow = 0x0002,
+
+            ` Can’t refuse the mission.
+            CantRefuse = 0x0004,
+
+            ` Mission takes away 100 units of fuel upon auto-abort. (mission
+            ` won't be offered if player has less than 100 units of fuel).
+            DeductsFuel = 0x0008,
+
+            ` Infinite auxShips.
+            InfiniteAuxShips = 0x0010,
+
+            ` Mission fails if you're scanned.
+            FailIfScanned = 0x0020,
+
+            ` Apply -5x CompReward reversal on abort.
+            AbortPenalty = 0x0040,
+
+            ` Global penalty when jettisoning mission cargo in space (currently
+            ` ignored).
+            JettisonPenalty = 0x0080,
+
+            ` Show green arrow on map in initial briefing.
+            ShowGreenArrow = 0x0100,
+
+            ` Show an additional arrow on the map for the ShipSyst.
+            ShowShipSystemArrow = 0x0200,
+
+            ` Mission is invisible and won't appear in the mission info dialog.
+            ` (Be careful with this!).
+            IsInvisible = 0x0400,
+
+            ` The special ships' type will be selected at mission start and then
+            ` kept the same whenever the special ships for that mission are
+            ` created, until the mission ends. This can be used for (e.g.)
+            ` "attack pirate" missions where you want the type of the enemy ship
+            ` to be random at first but you don't want it to change every time
+            ` the player lands or re-enters the system.
+            PersistentSpecialShipType = 0x0800,
+
+            ` Mission unavailable if player’s ship is of inherentAI type 1 or 2
+            ` (cargo ships).
+            UnavailableIfPlayerIsCargoShip = 0x2000,
+
+            ` Mission unavailable if player’s ship is of inherentAI type 3 or 4
+            ` (warships).
+            UnavailableIfPlayerIsWarship = 0x4000,
+
+            ` Mission will fail if player is boarded by pirates.
+            FailIfBoardedByPirates = 0x8000
+        ];
+        Flags2 = 0 [
+            ` Don't offer mission if the player doesn't have enough cargo space
+            ` to hold the mission cargo (even if the mission cargo won't be
+            ` picked up until later).
+            DontOfferIfInsufficientSpace = 0x0001,
+
+            ` Apply mission Pay on auto-abort.
+            PayOnAutoAbort = 0x0002,
+
+            ` Mission fails if player is disabled or destroyed.
+            FailIfDisabledOrDestroyed = 0x0004
+        ];
+    };
+
+    ` The desc, if any, to show when mission offered in a bar or from a passing
+    ` ship is refused.
+    field("RefuseText") {
+        RefuseText as Description& [ Ignored = #-1 ];
+    };
+
+    ` Defines what class of ship you must have for this mission to be made
+    ` available:
+    ` 0 or -1: ignored
+    ` 128-255: Must be flying a ship of this type.
+    ` 1128-1255: Must not be flying a ship of this type.
+    ` 2128-2255: Must be flying a ship of this inherent govt.
+    ` 3128-3255: Must not be flying a ship of this inherent govt.
+    field("AvailableShipType") {
+        AvailShipTyp [ Ignored = -1 ];
+    };
+
+    ` A control bit test expression that determines the mission's availability.
+    ` If not left blank, the mission will only be available when the expression
+    ` evaluates to true.
+    field("AvailableBits") {
+        AvailBits = "";
+    };
+
+    ` Control bit set expression which is evaluated when the mission is accepted
+    ` by the player.
+    field("OnAccept") {
+        OnAccept = "";
+    };
+
+    ` Control bit set expression which is evaluated when the mission is refused
+    ` by the player.
+    field("OnRefuse") {
+        OnRefuse = "";
+    };
+
+    ` Control bit set expression which is evaluated when the mission is
+    ` completed successfully.
+    field("OnSuccess") {
+        OnSuccess = "";
+    };
+
+    ` Control bit set expression which is evaluated when the mission is failed.
+    field("OnFailure") {
+        OnFailure = "";
+    };
+
+    ` Control bit set expression which is evaluated when the mission is aborted
+    ` by the player.
+    field("OnAbort") {
+        OnAbort = "";
+    };
+
+    ` These two Require fields together form a 64-bit flag that is logically
+    ` and'ed with the Contribute fields from the player's current ship and
+    ` outfit items. If for each 1 bit in the Require fields there is a matching
+    ` 1 bit in one or more of the Contribute fields, the mission will be
+    ` available. Leave these set to zero if unused.
+    field("Require") {
+        Require1 = 0;
+        Require2 = 0;
+    };
+
+    ` If this is set to something greater than zero, the game date will be
+    ` advanced by this number of days after successful completion or
+    ` auto-aborting of the mission.
+    field("DatePostInc") {
+        DatePostInc;
+    };
+
+    ` Control bit set expression which is evaluated when the mission's special
+    ` ship goal is completed.
+    field("OnShipDone") {
+        OnShipDone;
+    };
+
+    ` The label to use for the Accept button in the initial mission briefing
+    ` dialog. If no text is entered here, Nova will use the "Yes" button label
+    ` from STR# 150 if the mission can be refused, or the "Okay" button label
+    ` if the mission is non-refusable.
+    field("AcceptButton") {
+        AcceptButton = "";
+    };
+
+    ` The label to use for the Refuse button in the initial mission briefing
+    ` dialog, for missions that can be refused. If no text is entered here,
+    ` Nova will use the "No" button label from STR# 150.
+    field("RefuseButton") {
+        RefuseButton;
+    };
+
+    ` Controls the order that the mission is presented in the bar and mission
+    ` BBS list. Missions with higher DispWeight values are presented first.
+    field("DisplayWeight") {
+        DispWeight;
+    };
+
+    ` Whenever Nova displays a desc resource related to a mission, such as the
+    ` initial mission description (desc ID 4000-4255) or one of the special
+    ` mission briefings (e.g. CompText and QuickBrief) it performs one other
+    ` special operation on the text. It searches through the text and replaces
+    ` a few special "wildcard" symbols with pertinent mission information. This
+    ` is extremely useful in setting up mission briefings that include random
+    ` information that wouldn't be known when the description is written. These
+    ` special symbols and their expansions are:
+    ` <DSY>: The name of the destination system
+    ` <DST>: The name of the destination stellar
+    ` <RSY>: The name of the return system
+    ` <RST>: The name of the return stellar
+    ` <CT>:  The name of the type of cargo to be carried
+    ` <CQ>:  The quantity of cargo to be carried
+    ` <DL>:  The date of the mission deadline, if any.
+    ` <PAY>: Absolute value of mission pay (does nothing if the mission pay
+    `        isn't monetary)
+    ` <REG>: Who Nova is registered to, or "UNREGISTERED".
+    ` <PN>:  The player's name.
+    ` <PNN>: The player's nickname. If no nickname was specified, Nova will use
+    `        the player's full name here instead.
+    ` <PSN>: The player's ship's name.
+    ` <PST>: The player's ship type (comes from the resource name of the
+    `        player's ship type's shïp resource).
+    ` <PRK>: The ConvName of the highest-weighted active rank resource. If none
+    `        is found, this will be replaced with "captain".
+    ` <SRK>: The ShortName of the highest-weighted active rank resource. If none
+    `        is found, this will be replaced with "captain".
+    ` <PRKnnn>: Same as <PRK>, but only for ranks affiliated with government ID
+    `           nnn. Note that you can only do this once per description, or bad
+    `           things might happen.
+    ` <SRKnnn>: Same as <SRK>, but only for ranks affiliated with government ID
+    `           nnn. Note that you can only do this once per description, or bad
+    `           things might happen.
+    ` <RRK>: The full name of the most recently activated rank resource. Note
+    `        that it's best to only use this in a mission briefing where you
+    `        know that you've just given the player a rank, because otherwise
+    `        bad things could happen. (e.g. the most recently activated rank
+    `        pointer isn't cached between game sessions).
+    ` <OSN>: The offering ship name (only works when offering a mission from a
+    `        ship).
+    ` <SN>:  Special ship name (Note: Nova will screw up if you use this in the
+    `        initial mission description, as it doesn't pick the special ship
+    `        names until you actually accept the mission.).
+
+    ` Note: Mission cargo names that start with the asterisk character ('*') are
+    ` treated as "quantity less" - i.e. their quantity is never shown in the
+    ` player-info dialog and the word "the" is omitted in the message that
+    ` appears when the player retrieves that type of cargo from a ship as part
+    ` of a mission. This is useful for when the mission cargo is a proper name.
+};

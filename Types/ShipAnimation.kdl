@@ -1,0 +1,382 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` Shan (ship animation) resources contain sprite info for ship graphics, which
+` are too complex for the more rudimentary spin resource.
+
+@type ShipAnimation : "shän" {
+    template {
+        DWRD BaseImageID;
+        DWRD BaseMaskID;
+        DWRD BaseSetCount;
+        DWRD BaseXSize;
+        DWRD BaseYSize;
+        DWRD BaseTransp;
+        DWRD AltImageID;
+        DWRD AltMaskID;
+        DWRD AltSetCount;
+        DWRD AltXSize;
+        DWRD AltYSize;
+        DWRD GlowImageID;
+        DWRD GlowMaskID;
+        DWRD GlowXSize;
+        DWRD GlowYSize;
+        DWRD LightImageID;
+        DWRD LightMaskID;
+        DWRD LightXSize;
+        DWRD LightYSize;
+        DWRD WeapImageID;
+        DWRD WeapMaskID;
+        DWRD WeapXSize;
+        DWRD WeapYSize;
+        HWRD Flags;
+        DWRD AnimDelay;
+        DWRD WeapDecay;
+        DWRD FramesPer;
+        DWRD BlinkMode;
+        DWRD BlinkA;
+        DWRD BlinkB;
+        DWRD BlinkC;
+        DWRD BlinkD;
+        DWRD ShieldImgID;
+        DWRD ShieldMaskID;
+        DWRD ShieldXSize;
+        DWRD ShieldYSize;
+        DWRD GunPosX1;
+        DWRD GunPosX2;
+        DWRD GunPosX3;
+        DWRD GunPosX4;
+        DWRD GunPosY1;
+        DWRD GunPosY2;
+        DWRD GunPosY3;
+        DWRD GunPosY4;
+        DWRD TurretPosX1;
+        DWRD TurretPosX2;
+        DWRD TurretPosX3;
+        DWRD TurretPosX4;
+        DWRD TurretPosY1;
+        DWRD TurretPosY2;
+        DWRD TurretPosY3;
+        DWRD TurretPosY4;
+        DWRD GuidedPosX1;
+        DWRD GuidedPosX2;
+        DWRD GuidedPosX3;
+        DWRD GuidedPosX4;
+        DWRD GuidedPosY1;
+        DWRD GuidedPosY2;
+        DWRD GuidedPosY3;
+        DWRD GuidedPosY4;
+        DWRD BeamPosX1;
+        DWRD BeamPosX2;
+        DWRD BeamPosX3;
+        DWRD BeamPosX4;
+        DWRD BeamPosY1;
+        DWRD BeamPosY2;
+        DWRD BeamPosY3;
+        DWRD BeamPosY4;
+        DWRD UpCompressX;
+        DWRD UpCompressY;
+        DWRD DnCompressX;
+        DWRD DnCompressY;
+        DWRD GunPosZ1;
+        DWRD GunPosZ2;
+        DWRD GunPosZ3;
+        DWRD GunPosZ4;
+        DWRD TurretPosZ1;
+        DWRD TurretPosZ2;
+        DWRD TurretPosZ3;
+        DWRD TurretPosZ4;
+        DWRD GuidedPosZ1;
+        DWRD GuidedPosZ2;
+        DWRD GuidedPosZ3;
+        DWRD GuidedPosZ4;
+        DWRD BeamPosZ1;
+        DWRD BeamPosZ2;
+        DWRD BeamPosZ3;
+        DWRD BeamPosZ4;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+        DWRD _;
+    };
+
+    ` Base sprite image definition. Includes:
+    ` - The resource ID of the basic sprite images for this ship.
+    ` - The ID of the corresponding sprite masks (ignored if the base
+    `   image is an rleD/rle8 resource),
+    ` - The number of sprite sets for the basic sprite images. A sprite set is
+    `   usually 36 sprite images, and the graphics for all of a ship's basic
+    `   sprite sets are stored in the same PICT/rleD/rle8 resource, referred to
+    `   in BaseImageID.
+    ` - The X and Y size of each basic sprite image.
+    ` - The inherent transparency of the basic sprite images, from 0 (no
+    `   transparency) to 32 (fully transparent).
+    field("BaseImage") {
+        BaseImageID as Image<MacintoshPicture>&;
+        BaseMaskID  as Image<MacintoshPicture>& = #0;
+        BaseSetCount;
+        BaseSizeX;
+        BaseSizeY;
+        BaseTransp as Range<0, 32>;
+    };
+
+    ` Alternating sprite image definition. Includes:
+    ` - The resource ID of the alternating sprite images for this ship. Sprites
+    `   from the alt sprite sets can be displayed on top of the basic sprite for
+    `   the ship, cycling through each available sprite set at a rate defined in
+    `   the Delay field, below. Set to zero if unused.
+    ` - The corresponding mask ID. Set to zero if unused.
+    ` - The number of sprite sets for the alternating sprites.
+    ` - The X and Y size of the alternating sprite image
+    field("AlternatingImage") {
+        AltImageID as Image<MacintoshPicture>& = #0;
+        AltMaskID as Image<MacintoshPicture>& = #0;
+        AltSetCount;
+        AltXSize;
+        AltYSize;
+    };
+
+    ` Engine glow sprite image definition. Includes:
+    ` - The resource ID of the engine glow images for this ship.
+    ` - The corresponding mask ID.
+    ` - The X and Y size of the engine glow sprite image
+    ` TODO: these seem under-documented in the EVN Bible; expand this
+    ` section to explain how these work in practice
+    field("GlowImage") {
+        GlowImageID as Image<MacintoshPicture>& = #0;
+        GlowMaskID as Image<MacintoshPicture>& = #0;
+        GlowXSize;
+        GlowYSize;
+    };
+
+    ` Running light sprite image definition. Includes:
+    ` - The resource ID of the running light images for this ship.
+    ` - The corresponding mask ID.
+    ` - The X and Y size of the running light sprite image
+    ` TODO: these seem under-documented in the EVN Bible; expand this
+    ` section to explain how these work in practice
+    field("LightImage") {
+        LightImageID as Image<MacintoshPicture>& = #0;
+        LightMaskID as Image<MacintoshPicture>& = #0;
+        LightXSize;
+        LightYSize;
+    };
+
+    ` Weapon effects sprite image definition. Includes:
+    ` - The resource ID of the weapon effects images for this ship.
+    ` - The corresponding mask ID.
+    ` - The X and Y size of the weapon effects sprite image
+    ` TODO: these seem under-documented in the EVN Bible; expand this
+    ` section to explain how these work in practice
+    field("WeaponImage") {
+        WeapImageID as Image<MacintoshPicture>& = #0;
+        WeapMaskID as Image<MacintoshPicture>& = #0;
+        WeapXSize;
+        WeapYSize;
+    };
+
+    ` Shield bubble sprite image definition. Shield sprites have a number of
+    ` frames exactly equal to 1, FramesPer, or BaseSetCount*FramesPer.
+    ` Includes:
+    ` - The resource ID of the shield bubble images for this ship.
+    ` - The corresponding mask ID.
+    ` - The X and Y size of the shield bubble sprite image
+    ` TODO: these seem under-documented in the EVN Bible; expand this
+    ` section to explain how these work in practice
+    field("ShieldImage") {
+        ShieldImgID as Image<MacintoshPicture>& = #0;
+        ShieldMaskID as Image<MacintoshPicture>& = #0;
+        ShieldXSize;
+        ShieldYSize;
+    };
+
+    ` Graphical display flags. Note that the first four flags in this field are
+    ` mutually exclusive - i.e. you can have a ship that banks, unfolds, changes
+    ` appearance when it is carrying a certain other ship type, or animates in
+    ` sequence, but these effects can't be combined. The only exception is that
+    ` having both flags 0x0001 and 0x0002 set is treated specially - it results
+    ` in a ship whose extra frames are used for banking and which always
+    ` displays its engine glow when it is turning, whether or not it is actually
+    ` accelerating. (This something that got thrown in at some point when I
+    ` realized that it would be necessary to have in order to replicate the
+    ` behaviour of a certain type of ship from a certain TV show).
+    field("Flags") {
+        Flags as Bitmask = 0 [
+            ` Extra frames in base image are used to display banking. The first
+            ` set of sprites is used for level flight, the second for banking
+            ` left, and the third for banking right.
+            ExtraFramesForBanking = 0x0001,
+
+            ` Extra frames in base image are used for animated ship parts such
+            ` as for folding/unfolding wings. The sprites will be cycled upon
+            ` landing, taking off, and entering/exiting hyperspace.
+            ExtraFramesForAnimatedParts = 0x0002,
+
+            ` The second set of frames in the base image are displayed when the
+            ` ship is not carrying any of its KeyCarried type ships onboard.
+            SecondFrameSetForCarrierEmpty = 0x0004,
+
+            ` Extra frames in base image are shown in sequence, just like the
+            ` sprites in the alternating image. The AnimDelay field has the same
+            ` effect in this case.
+            ExtraFramesShownInSequence = 0x0008,
+
+            ` Stop the ships' animations when it is disabled.
+            StopAnimationsWhenDisabled = 0x0010,
+
+            ` Hide alt sprites when the ship is disabled.
+            HideAltSpritesWhenDisabled = 0x0020,
+
+            ` Hide running light sprites when the ship is disabled.
+            HideRunningLightsWhenDisabled = 0x0040,
+
+            ` Ship unfolds when firing weapons, and folds back up when not
+            ` firing.
+            UnfoldsWhenFiringWeapons = 0x0080,
+
+            ` Adjust ship's visual presentation to correct for the skew caused
+            ` by graphics that are rendered highly off-axis from vertical. This
+            ` uses the ship's UpCompressY and DnCompressY fields to interpolate
+            ` the proper sprite frame to display based on the ship's actual
+            ` heading. Use this with caution, as it tends to cause very jerky
+            ` ship rotation and is mostly included as a curiosity.
+            CorrectSkew = 0x0100
+        ];
+    };
+
+    ` The delay between frames of the sprite animations, in 30ths of a second.
+    field("AnimationDelay") {
+        AnimDelay;
+    };
+
+    ` The rate at which the weapon glow sprite fades out to transparency, if
+    ` applicable. 50 is a good median number - lower numbers yield slower decays
+    field("WeaponDecay") {
+        WeapDecay;
+    };
+
+    ` The number of frames for one rotation of this ship - usually 36 is a good
+    ` number, but larger ships can benefit from having more frames per rotation
+    ` to make their turning animation look smoother. Be sure this value is equal
+    ` to the actual number of frames per revolution in your images, or bad
+    ` things will happen!
+    field("FramesPerRotation") {
+        FramesPer;
+    };
+
+    ` Sets the running light behaviour. First value is the mode; the meaning of
+    ` subsequent values depends on the selected mode.
+    field("Blink") {
+        BlinkMode [
+            Ignored = 0,
+
+            ` Square-wave blinking
+            ` BlinkValA is the light on-time.
+            ` BlinkValB is the delay between blinks.
+            ` BlinkValC is the number of blinks in a group.
+            ` BlinkValD is the delay between groups.
+            SquareWave = 1,
+
+            ` Triangle-wave pulsing
+            ` BlinkValA is the minimum intensity (1-32).
+            ` BlinkValB is the intensity increase per frame, x100.
+            ` BlinkValC is the maximum intensity (1-32).
+            ` BlinkValD is the intensity decrease per frame, x100.
+            TriangleWave = 2,
+
+            ` Random pulsing
+            ` BlinkValA is the minimum intensity (1-32).
+            ` BlinkValB is the maximum intensity (1-32).
+            ` BlinkValC is the delay between intensity changes.
+            ` BlinkValD is ignored.
+            Random = 3
+        ];
+
+        BlinkA;
+        BlinkB;
+        BlinkC;
+        BlinkD;
+    };
+
+    ` Here you can set the exit points on the ship sprite for four.different
+    ` classes of weapons. Note that The "Gun" "Beam" etc.designations are for
+    ` convenience only, since which set of weapon exit points is used by a given
+    ` weapon are defined in that weapon's ExitType field. The x & y positions of
+    ` each weapon exit point are measured in pixels from the centre of the ship
+    ` when the ship is pointing straight up (frame index 0). See the next four
+    ` fields if you need to account for any perspective corrections in your
+    ` sprites.
+    ` The Z position is used to set further weapon exit point offsets in order
+    ` to compensate for skew caused by the z position of a ship graphic's weapon
+    ` exit point. These values are added to a shot or beam's position after the
+    ` weapon exit point x & y offsets and the x & y compression factors have
+    ` been applied, so the effect of these values is not scaled. Positive values
+    ` here move up the screen, negative values move down the screen. (This is a
+    ` lot easier to use with the editor than it is to describe).
+    field("GunPos") repeatable<1, 4> {
+        GunPosX<$FieldNumber>;
+        GunPosY<$FieldNumber>;
+        GunPosZ<$FieldNumber> = 0;
+    };
+
+    field("TurretPos") repeatable<1, 4> {
+        TurretPosX<$FieldNumber>;
+        TurretPosY<$FieldNumber>;
+        TurretPosZ<$FieldNumber> = 0;
+    };
+
+    field("GuidedPos") repeatable<1, 4> {
+        GuidedPosX<$FieldNumber>;
+        GuidedPosY<$FieldNumber>;
+        GuidedPosZ<$FieldNumber> = 0;
+    };
+
+    field("BeamPos") repeatable<1, 4> {
+        BeamPosX<$FieldNumber>;
+        BeamPosY<$FieldNumber>;
+        BeamPosZ<$FieldNumber> = 0;
+    };
+
+    ` If you have ship sprites that are rendered at an angle, these fields are
+    ` used to correct for the ships perspective when calculating the weapon exit
+    ` points (above). If the ship is pointing generally "up" (heading is 0-90
+    ` or 270-359) then UpCompressX/Y are used; if the ship is pointing generally
+    ` "down" (heading is 91-269 degrees) then DnCompressX/Y are used. These
+    ` values are divided by 100 and then multiplied by the rotated x & y values
+    ` in the weapon exit point fields to apply a rough correction factor, so
+    ` values less that 100 will bring the exit points in closer to the ship and
+    ` values greater than 100 will move the exit points farther out.
+    ` Experimentation is the best way to learn how this works. Values of zero
+    ` are interpreted the same as a value of 100, so you can leave this field
+    ` set to zero if unused.
+    field("UpCompress") {
+        UpCompressX = 0;
+        UpCompressY = 0;
+    };
+
+    field("DnCompress") {
+        DnCompressX = 0;
+        DnCompressY = 0;
+    };
+};
