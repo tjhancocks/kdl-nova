@@ -136,8 +136,8 @@
         BaseImageID as Image<MacintoshPicture>&;
         BaseMaskID  as Image<MacintoshPicture>& = #0;
         BaseSetCount;
-        BaseSizeX;
-        BaseSizeY;
+        BaseXSize;
+        BaseYSize;
         BaseTransp as Range<0, 32>;
     };
 
@@ -222,7 +222,7 @@
     ` realized that it would be necessary to have in order to replicate the
     ` behaviour of a certain type of ship from a certain TV show).
     field("Flags") {
-        Flags as Bitmask = 0 [
+        Flags as Bitmask [
             ` Extra frames in base image are used to display banking. The first
             ` set of sprites is used for level flight, the second for banking
             ` left, and the third for banking right.
@@ -288,7 +288,7 @@
     ` Sets the running light behaviour. First value is the mode; the meaning of
     ` subsequent values depends on the selected mode.
     field("Blink") {
-        BlinkMode [
+        BlinkMode = Ignored [
             Ignored = 0,
 
             ` Square-wave blinking
@@ -378,5 +378,18 @@
     field("DnCompress") {
         DnCompressX = 0;
         DnCompressY = 0;
+    };
+};
+
+@example declare ShipAnimation {
+    new(#128, "Example Ship Animation") {
+        BaseImage = #128 #0 36 64 64 0;
+        FramesPerRotation = 36;
+        GunPos = -3 5 0;
+        GunPos = 3 5 0;
+        TurretPos = -3 0 0;
+        TurretPos = 3 0 0;
+        BeamPos = -3 5 0;
+        BeamPos = 3 5 0;
     };
 };

@@ -78,3 +78,12 @@
         yTiles;
     };
 };
+
+@example declare Sprite {
+    new(#128, "Example sprite") {
+        Sprites = #1000;
+        Masks = #1000;
+        TileSize = 64 64;
+        NumTiles = 6 6;
+    };
+};

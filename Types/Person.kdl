@@ -72,7 +72,7 @@
 
     ` Which systems the person can be created in.
     field("AppearsInSystems") {
-        LinkSyst [
+        LinkSyst = AnySystem [
             AnySystem = -1
 
             ` 128-2175: ID of a specific system
@@ -85,12 +85,12 @@
 
     ` The person's governmental affiliation
     field("Government") {
-        Govt as Government& = #-1;
+        Govt as Government& = None [ None = #-1 ];
     };
 
     ` The person's AI type
     field("AI") {
-        AIType as Range<1, 4> [
+        AIType [
             WimpyTrader = 1,
             BraveTrader = 2,
             Warship = 3,
@@ -121,9 +121,9 @@
     ` weapon) and ammo loads. Standard weapons can be removed with a negative
     ` count.
     field("Weapons") repeatable<1, 4> {
-        WeapType<$FieldNumber> as Weapon& = #-1;
-        WeapCount<$FieldNumber> = 0;
-        AmmoLoad<$FieldNumber> = 0;
+        WeapType<$FieldNumber> as Weapon& = None [ None = #-1 ];
+        WeapCount<$FieldNumber> = None [ None = 0 ];
+        AmmoLoad<$FieldNumber> = None [ None = 0];
     };
 
     ` How many credits the person carries. 0 is no credits, 1 and up means
@@ -144,7 +144,7 @@
     ` ID number of a PICT resource to be displayed in the communications dialog
     ` instead of the standard picture for this person's ship type.
     field("HailPicture") {
-        HailPict as Image<MacintoshPicture>& = #-1;
+        HailPict as Image<MacintoshPicture>& = None [ None = #-1 ];
     };
 
     ` Index number of an entry in STR# resource 7100, to be displayed in the
@@ -161,12 +161,12 @@
 
     ` What mission to activate when the ship is boarded or hailed.
     field("LinkMission") {
-        LinkMission as Mission& = #-1;
+        LinkMission as Mission& = None [ None = #-1 ];
     };
 
     ` Some control bits.
     field("Flags") {
-        Flags as Bitmask = 0 [
+        Flags as Bitmask [
             ` The special ship will hold a grudge if attacked, and will
             ` subsequently attack the player wherever the twain shall meet.
             HoldsGrudge = 0x0001,
@@ -228,7 +228,7 @@
             ` Show disaster info when hailing.
             ShowDisasterInfoWhenHailing = 0x8000
         ];
-        Flags2 as Bitmask = 0 [
+        Flags2 as Bitmask [
             ` This person starts with zero fuel
             StartsWithNoFuel = 0x0001
         ];
@@ -261,13 +261,26 @@
 
     ` Custom subtitle string for this person (shown in targeting pane)
     field("Subtitle") {
-        Subtitle;
+        Subtitle = "";
     };
 
     ` The colour to paint this person's ship, encoded the same as HTML colours
     ` (00RRGGBB). Set to 00000000 if unused (which is the same as 00FFFFFF, or
     ` "pure white paint" i.e. no shading).
     field("Color") {
-        Color;
+        Color = 0;
+    };
+};
+
+@example declare Person {
+    new(#128, "Example Person") {
+        AI = Warship;
+        Aggression = 3;
+        Coward = 50%;
+        ShipType = #128;
+        ShieldMod = 200;
+        Credits = 1000000;
+        Flags = HoldsGrudge | StartsWithNoFuel;
+        Subtitle = "Very angry";
     };
 };

@@ -78,13 +78,13 @@
     ` These can be used to prevent the player from buying certain items or doing
     ` certain missions until achieving a certain rank, for example.
     field("Contrib") {
-        Contrib1 as Bitmask = 0;
-        Contrib2 as Bitmask = 0;
+        Contrib1 as Bitmask;
+        Contrib2 as Bitmask;
     };
 
     ` Flags relating to the privileges of the rank
     field("Flags") {
-        Flags as Bitmask = 0 [
+        Flags as Bitmask [
             ` Deactivate all other active ranks affiliated with this same govt
             ` when this rank is activated (excludes permanent ranks)
             DeactivateOthersOnActivate = 0x0001,
@@ -141,7 +141,7 @@
     ` ConvName is "Space Marshall", then "Good job, <PRK>" becomes either "Good
     ` job, Space Marshall" or "Good job, captain".
     field("ConversationName") {
-        ConvName;
+        ConvName = "";
     };
 
     ` The short rank named as used in conversation through mission briefings and
@@ -149,6 +149,17 @@
     ` ConvName field. example: if ShortName is "Marshall" then "Hi there, <PSR>"
     ` becomes either "Hi there, Marshall" or "Hi there, captain".
     field("ShortName") {
-        ShortName;
+        ShortName = "";
+    };
+};
+
+@example declare Rank {
+    new(#128, "Example Rank") {
+        Weight = 100;
+        Government = #128;
+        PriceMod = 50;
+        Flags = AlwaysRenderAid;
+        ConversationName = "Very Important Person";
+        ShortName = "VIP";
     };
 };

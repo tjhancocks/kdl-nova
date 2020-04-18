@@ -1,15 +1,15 @@
 ` Copyright (c) 2019-2020 Tom Hancocks
-` 
+`
 ` Permission is hereby granted, free of charge, to any person obtaining a copy
 ` of this software and associated documentation files (the "Software"), to deal
 ` in the Software without restriction, including without limitation the rights
 ` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 ` copies of the Software, and to permit persons to whom the Software is
 ` furnished to do so, subject to the following conditions:
-` 
+`
 ` The above copyright notice and this permission notice shall be included in all
 ` copies or substantial portions of the Software.
-` 
+`
 ` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 ` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 ` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,7 +28,7 @@
 `	128-2175 		Stellar object descriptions, shown when landed on a planet.
 `	3000-3511 		Outfit item descriptions, shown in ship outfitting dialog.
 `	4000-4999 		Mission descriptions, shown in mission dialog.
-`	13000-13767 	Ship class descriptions, shown in the shipyard and 
+`	13000-13767 	Ship class descriptions, shown in the shipyard and
 `					requisition-escort dialog.
 `	13999 			Message shown after the player uses an escape pod.
 `	14000-14767 	Ship pilot descriptions, shown in the hire-escort dialog.
@@ -55,10 +55,10 @@
 ` be substituted.
 `
 ` For example, consider this dësc resource:
-`	
+`
 `	This is a {b001 "great and terrific" "lousy, terrible"} example.
 `
-` ...if bit 001 is set, the output will be "This is a great and terrific 
+` ...if bit 001 is set, the output will be "This is a great and terrific
 ` example." If bit 001 is not set, the output will be "This is a lousy, terrible
 ` example.".
 `
@@ -69,7 +69,7 @@
 `
 ` This is also works with the player's gender - for example:
 `
-`	This is a test string and the player is 
+`	This is a test string and the player is
 `	{G "a male character" "a female pilot"}.
 `
 ` ...in this case, the G character signifies that the following text is mutable
@@ -121,10 +121,15 @@
     		` Show movie at double-size.
     		DoubleSizeMovie = 0x0002,
 
-    		` Cinematic movie - blank background and fade screen before and 
+    		` Cinematic movie - blank background and fade screen before and
     		` after.
     		CinematicMovie = 0x0004
     	];
     };
+};
 
+@example declare Description {
+    new(#128, "Example planet description") {
+        Text = "This is an example planet.";
+    };
 };

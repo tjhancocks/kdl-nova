@@ -188,7 +188,10 @@
     ` -1000 and below: Weapon uses abs(AmmoType+1000)/10 units of fuel per shot.
     `                  (example: - 1005 = 0.5 units per shot).
     field("AmmoType") {
-        AmmoType;
+        AmmoType [
+            Unlimited = -1,
+            ShipDestroyedWhenFired = -999
+        ];
     };
 
     ` What graphic set to use for this weapon (from spin resources 3000-3255)
@@ -247,7 +250,7 @@
 
     ` Weapon behavior flags
     field("Flags") {
-        Flags as Bitmask = 0 [
+        Flags as Bitmask [
             ` Spin the weapon's graphic continuously (rate of frame advance is
             ` controlled by the BeamWidth field as detailed below).
             SpinContinuously = 0x0001,
@@ -294,14 +297,14 @@
             ` Turreted weapon has a blind spot to the sides.
             SideBlindSpot = 0x2000,
 
-            ` T urreted weapon has a blind spot to the rear .
+            ` Turreted weapon has a blind spot to the rear .
             RearBlindSpot = 0x4000,
 
             ` Shot detonates at the end of its lifespan (useful for flak-type
             ` weapons).
             ShotDetonatesOnExpiry = 0x8000
         ];
-        Flags2 as Bitmask = 0 [
+        Flags2 as Bitmask [
             ` For cycling weapons, keep the graphic on the first frame until the
             ` weapon's ProxSafety count has expired.
             UseFirstFrameUntilProxTimeout = 0x0001,
@@ -356,7 +359,7 @@
             ` Weapon does x10 mass damage to asteroids.
             X10DamageToAsteroids = 0x8000
         ];
-        Flags3 as Bitmask = 0 [
+        Flags3 as Bitmask [
             ` Weapon will only use ammo at the end of a burst cycle.
             UseAmmoAtEndOfBurst = 0x0001,
 
@@ -380,7 +383,7 @@
     ` The next field contains flags that control how a guided weapon
     ` (Guidance = 1) behaves, as well as some misc flags for other weapon types:
     field("Seeker") {
-        Seeker as Bitmask = 0 [
+        Seeker as Bitmask [
             ` Passes over asteroids
             PassesOverAsteroids = 0x0001,
 
@@ -563,7 +566,13 @@
     ` 2: GuidedPosX/Y
     ` 3: BeamPosX/Y
     field("ExitType") {
-        ExitType;
+        ExitType [
+            Center = -1,
+            GunPos = 0,
+            TurretPos = 1,
+            GuidedPos = 2,
+            BeamPos = 3
+        ];
     };
 
     ` The number of shots this weapon can fire before having to endure a burst
@@ -640,5 +649,24 @@
     ` to look odd when used as the ionization colour.
     field("IonizeColor") {
         IonizeColor;
+    };
+};
+
+@example declare Weapon {
+    new(#128, "Example Laser") {
+        Reload = 30;
+        Count = 30;
+        MassDamage = 5;
+        EnergyDamage = 6;
+        Guidance = Unguided;
+        Speed = 10;
+        AmmoType = Unlimited;
+        Graphic = 1;
+        Inaccuracy = 2;
+        Sound = 1;
+        Impact = 1;
+        ExplosionType = 0;
+        Flags = FiresWhileCloaked;
+        ExitType = GunPos;
     };
 };

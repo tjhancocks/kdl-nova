@@ -68,7 +68,7 @@
 
     ` ID of the fleet's government, of -1 for none.
     field("Government") {
-        Govt as Government& = #-1;
+        Govt as Government& = None [ None = #-1 ];
     };
 
     ` Which systems the fleet can be created in.
@@ -78,30 +78,39 @@
     ` 15000-15255: Any system belonging to an ally of this govt.
     ` 20000-20255: Any system belonging to any but this govt.
     ` 25000-25255: Any system belonging to an enemy of this govt.
-    field("LinkSyst") {
-        LinkSyst = -1;
+    field("LinkSystem") {
+        LinkSyst = AnySystem [ AnySystem = -1 ];
     };
 
     ` A control bit test field that will cause a given fleet to appear only when
     ` the expression evaluates to true. If this field is left blank it will be
     ` ignored.
     field("AppearOn") {
-        AppearOn = "";
+        ActivateOn = "";
+    };
+
+    ` Flags
+    field("Flags") {
+        Flags as Bitmask [
+            ` Freighters (InherentAI <= 2) in this fleet will have random cargo
+            ` when boarded.
+            FreightersHaveRandomCargo = 0x0001
+        ];
     };
 
     ` Show a random string from the STR# resource with this ID when the fleet
     ` enters from hyperspace. Any occurrences of the character '#' in this
     ` string will be replaced with a random digit (0-9).
     field("Quote") {
-        Quote = -1;
+        Quote = None [ None = -1 ];
     };
+};
 
-    ` Flags
-    field("Flags") {
-        Flags as Bitmask = 0 [
-            ` Freighters (InherentAI <= 2) in this fleet will have random cargo
-            ` when boarded.
-            FreightersHaveRandomCargo = 0x0001
-        ];
+@example declare Fleet {
+    new(#128, "Example Fleet") {
+        LeadShipType = #128;
+        Escorts = #129 1 4;
+        Escorts = #130 0 4;
+        Flags = FreightersHaveRandomCargo;
     };
 };

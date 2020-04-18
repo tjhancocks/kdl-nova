@@ -70,7 +70,7 @@
     };
 
     ` Control bit test expression. Leave blank if unused.
-    field("ActiveOnExpression") {
+    field("ActiveOn") {
         ActiveOn = "";
     };
 
@@ -82,7 +82,14 @@
     ` explored. As a result, this expression may get evaluated multiple times,
     ` so you shouldn't use the random operator or any operators which do
     ` anything but set or clear control bits here.
-    field("OnExploreExpression") {
+    field("OnExplore") {
         OnExplore = "";
+    };
+};
+
+@example declare Nebula {
+    new(#128, "Horsehead Nebula") {
+        Position = 50 100;
+        Size = 50 50;
     };
 };

@@ -53,8 +53,8 @@
         HWRD ScanMask;
         C010 CommName;
         C010 TargetCode;
-        HLNG Require;
-        HLNG Require;
+        HLNG Require1;
+        HLNG Require2;
         DWRD InhJam1;
         DWRD InhJam2;
         DWRD InhJam3;
@@ -112,7 +112,7 @@
 
     ` Sets a variety of characteristics
     field("Flags") {
-        Flags1 as Bitmask = 0 [
+        Flags as Bitmask [
             ` Xenophobic (Warships of this govt attack everyone except their
             ` allies. Useful for making pirates and other nasties.)
             Xenophobic = 0x0001,
@@ -177,7 +177,7 @@
             ` (useful for pirates).
             Greedy = 0x8000
         ];
-        Flags2 as Bitmask = 0 [
+        Flags2 as Bitmask [
             ` When hailing ships of this govt, the request assistance / beg for
             ` mercy button is disabled and the govt is not talkative.
             WontAid = 0x0001,
@@ -386,5 +386,19 @@
     ` (ID 9000) is substituted instead.
     field("NewsPict") {
         NewsPict;
+    };
+};
+
+@example declare Government {
+    new(#128, "Example Pirates") {
+        Flags = AlwaysAttackPlayer | WontAid | NoBoundaries;
+        InitialRecord = -1000;
+        MaxOdds = 200;
+        CommName = "Pirates";
+        TargetCode = "Pirate";
+        InherentJamming = 50%;
+        MediumName = "Pirate";
+        Color = 0xFF0000;
+        ShipColor = 0xFF0000;
     };
 };

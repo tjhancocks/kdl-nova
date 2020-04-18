@@ -1,15 +1,15 @@
 ` Copyright (c) 2019-2020 Tom Hancocks
-` 
+`
 ` Permission is hereby granted, free of charge, to any person obtaining a copy
 ` of this software and associated documentation files (the "Software"), to deal
 ` in the Software without restriction, including without limitation the rights
 ` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 ` copies of the Software, and to permit persons to whom the Software is
 ` furnished to do so, subject to the following conditions:
-` 
+`
 ` The above copyright notice and this permission notice shall be included in all
 ` copies or substantial portions of the Software.
-` 
+`
 ` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 ` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 ` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -88,7 +88,7 @@
         System1 as System& = #-1;
         System2 as System& = #-1;
         System3 as System& = #-1;
-        System4 as System4 = #-1;
+        System4 as System& = #-1;
     };
 
     ` For each of the governments whose ID is entered in a Govt1-4 field, the
@@ -134,7 +134,7 @@
 
     ` Flags relating the the character's behaviour in the engine.
     field("Flags") {
-        Flags as Bitmask = 0 [
+        Flags as Bitmask [
             ` Denotes the "default" chär resource, which will be automatically
             ` selected in the popup menu. If more than one chär resource has
             ` this bit set (there shouldn't be) the one with the lowest ID will
@@ -158,5 +158,14 @@
     ` String that is appended to the end of the date whenever it's displayed.
     field("DateSuffix") {
         DateSuffix = "AD";
+    };
+};
+
+@example declare PlayerCharacterTemplate {
+    new(#128, "Example Player") {
+        Cash = 50000;
+        Ship = #128;
+        Kills = 1000;
+        Flags = Default;
     };
 };

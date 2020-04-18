@@ -26,7 +26,7 @@
 ` that, in other parts of Nova's data file, you can point to a dude class and
 ` know that Nova will create a ship of the proper AI type and governmental
 ` alignment, and will pick the new ship's type based on the probabilities you
-` set in the dude resource. The dude resource's fields are:
+` set in the dude resource.
 
 @type ShipClass : "düde" {
     template {
@@ -77,7 +77,7 @@
     };
 
     field("AI") {
-        AIType as Range<1, 4> [
+        AIType [
             WimpyTrader = 1,
             BraveTrader = 2,
             Warship = 3,
@@ -127,7 +127,17 @@
     };
 
     field("Ships") repeatable<1, 16> {
-        ShipType<$FieldNumber> as Ship& = #-1;
+        ShipType<$FieldNumber> as Ship& = None [ None = #-1];
         Probability<$FieldNumber> as Range<0%, 100%> = 0%;
+    };
+};
+
+@example declare ShipClass {
+    new(#128, "Example Ship Class") {
+        AI = Warship;
+        Government = #128;
+        Booty = Food | Money;
+        Ships = #128 50%;
+        Ships = #129 50%;
     };
 };

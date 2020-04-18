@@ -65,12 +65,12 @@
     ` 1000-1127 This type of jünk resource.
     field("YieldType") {
         YieldType as Junk& [
-            Food = 0,
-            Industrial = 1,
-            MedicalSupplies = 2,
-            LuxuryGoods = 3,
-            Metal = 4,
-            Equipment = 5
+            Food = #0,
+            Industrial = #1,
+            MedicalSupplies = #2,
+            LuxuryGoods = #3,
+            Metal = #4,
+            Equipment = #5
         ];
     };
 
@@ -85,13 +85,10 @@
     };
 
     ` The number of particles that are thrown off when an asteroid of this type
-    ` is destroyed.
-    field("ParticleCount") {
+    ` is destroyed, and the color of the particles, encoded the same as HTML
+    ` colours. (00RRGGBB)
+    field("Particles") {
         PartCount;
-    };
-
-    ` The color of the particles, encoded the same as HTML colours. (00RRGGBB)
-    field("ParticleColor") {
         PartColor;
     };
 
@@ -111,7 +108,7 @@
     ` The average number of sub-asteroids (+/- 50%) to be generated when an
     ` asteroid of this type is destroyed (zero for none).
     field("FragmentCount") {
-        FragCount;
+        FragCount = 0;
     };
 
     ` Type of explosion to show (0-63) when an asteroid of this type is
@@ -128,5 +125,17 @@
     ` Mass of this asteroid type (used when weapons hit asteroids).
     field("Mass") {
         Mass;
+    };
+};
+
+@example declare Asteroid {
+    new(#128, "Large Example Asteroid") {
+        Strength = 50;
+        SpinRate = 10;
+        YieldType = MedicalSupplies;
+        YieldQty = 2;
+        Particles = 5 0xFF0000;
+        ExplosionType = 0;
+        Mass = 10;
     };
 };

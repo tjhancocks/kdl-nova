@@ -91,7 +91,7 @@
     ` characteristics of the stellar are. Perform an OR operation on the
     ` following flags to get the final flag value
     field("Flags") {
-        Flags as Bitmask = 0 [
+        Flags as Bitmask [
             ` Can land/dock here
             CanLand = 0x00000001,
 
@@ -149,7 +149,7 @@
             MedEquipmentPrices = 0x00000200,
             HighEquipmentPrices = 0x00000400
         ];
-        Flags2 as Bitmask = 0 [
+        Flags2 as Bitmask [
             ` For an animated stellar, the first frame will be shown after each
             ` subsequent frame.
             InterleaveFirstFrame = 0x0001,
@@ -222,12 +222,12 @@
     ` setting one of the SpecialTech fields of a particular stellar to that same
     ` value, thus making that item appear at that stellar and nowhere else.
     field("SpecialTech") repeatable<1, 8> {
-        SpecialTech<$FieldNumber>;
+        SpecialTech<$FieldNumber> = None [ None = -1 ];
     };
 
     ` What government controls this stellar
     field("Government") {
-        Govt as Government& [
+        Govt as Government& = Independent [
             Independent = #-1
         ];
     };
@@ -240,7 +240,10 @@
     ` 32767: Player can never land. (Note that this field is ignored if the
     `        stellar is uninhabited).
     field("MinStatus") {
-        MinCoolness;
+        MinCoolness [
+            CanAlwaysLand = -32767,
+            CanNeverLand = 32767
+        ];
     };
 
     ` The next pair of fields tells Nova which special landscape to show and
@@ -262,12 +265,12 @@
     `  specify an exact angle, while any other value specifies a random
     ` direction.;
     field("CustomSoundID") {
-        CustSndID = -1;
+        CustSndID = None [ None = -1];
     };
 
     ` Which ship class to use for the defence fleet
     field("DefenseShipClass") {
-        DefDude as ShipClass& = #-1;
+        DefDude as ShipClass& = None [ None = #-1];
     };
 
     ` The number of ships in the defence fleet. If you set this number to be
@@ -276,8 +279,8 @@
     ` the first 3-4 numbers (minus 1 from the first digit) are the total
     ` number of ships in the planet's fleet. For example, a value of 1082
     ` would be four waves of two
-    field("DefenseCount") {
-        DefCount;
+    field("DefenseShipCount") {
+        DefCount = 0;
     };
 
     ` The time to wait between frames, in 30ths of a second.
@@ -299,7 +302,7 @@
     ` wormhole to randomly connect to any other random wormhole when the player
     ` goes through it.
     field("HyperLink") repeatable<1, 8> {
-        HyperLink<$FieldNumber> as StellarObject& = #-1;
+        HyperLink<$FieldNumber> as StellarObject& = None [ None = #-1 ];
     };
 
     ` Control bit set expression which is evaluated when the stellar is
@@ -333,27 +336,30 @@
     ` bad things will happen). Stellars' weapons can be made to fire either
     ` only when provoked or any time an enemy ship is present.
     field("Weapon") {
-        Weapon as Weapon& = #-1;
+        Weapon as Weapon& = None [ None = #-1 ];
     };
 
     ` The amount of combined mass and energy damage this stellar can take from
     ` planetary-type weapons before it is destroyed. Set this to 0 or -1 for an
     ` invincible stellar.
     field("Strength") {
-        Strength = -1;
+        Strength = Invincible [ Invincible = -1 ];
     };
 
     ` Which stellar graphic to use when the stellar is destroyed (-1 to display
     ` the normal graphic type)
     field("DeadType") {
-        DeadType;
+        DeadType = NormalGraphic [ NormalGraphic = -1 ];
     };
 
     ` The amount of time a stellar remains destroyed before it regenerates
     ` itself. Set this to 0 for a stellar that regenerates at the end of every
     ` day, or -1 for a stellar that never regenerates on its own.
     field("DeadTime") {
-        DeadTime;
+        DeadTime [
+            NeverRegenerates = -1,
+            RegeneratesDailiy = 0
+        ];
     };
 
     ` Type of explosion to show (0-63) when the stellar is destroyed. You can
@@ -361,7 +367,7 @@
     ` ExplodeType field in the wëap resource. Set to -1 to not show any
     ` explosion.
     field("ExplosionType") {
-         ExplodType as Range<-1, 1063> [
+         ExplodType as Range<-1, 1063> = -1 [
              ` -1 No explosion.
              NoExplosion = -1
          ];
@@ -377,5 +383,19 @@
     ` automatically regenerates.
     field("OnRegen") {
         OnRegen = "";
+    };
+};
+
+@example declare StellarObject {
+    new(#128, "Example Planet") {
+        Position = 50 50;
+        Type = 1;
+        Flags = CanLand | HasCommodityExchange | HasShipyard | HasOutfitter |
+                LowFoodPrices | HighLuxuryPrices | CanBuyAnyOutfit;
+        Tribute = 1000;
+        TechLevel = 1;
+        MinStatus = CanAlwaysLand;
+        DefenseShipClass = #128;
+        DefenseShipCount = 1082;
     };
 };
