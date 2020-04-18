@@ -192,3 +192,13 @@
         SlideY<$FieldNumber>;
     };
 };
+
+@example declare Theme {
+    new(#128, "Example Theme") {
+        ButtonUpColor = 0xFF0000;
+        ButtonDownColor = 0x00FF00;
+        ButtonDisabledColor = 0x0000FF;
+        MenuFont = 12 "Arial";
+        ProgressBarBounds = 20 20 120 30;
+    };
+};

@@ -1,15 +1,15 @@
 ` Copyright (c) 2019-2020 Tom Hancocks
-` 
+`
 ` Permission is hereby granted, free of charge, to any person obtaining a copy
 ` of this software and associated documentation files (the "Software"), to deal
 ` in the Software without restriction, including without limitation the rights
 ` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 ` copies of the Software, and to permit persons to whom the Software is
 ` furnished to do so, subject to the following conditions:
-` 
+`
 ` The above copyright notice and this permission notice shall be included in all
 ` copies or substantial portions of the Software.
-` 
+`
 ` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 ` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 ` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -147,7 +147,7 @@
         Speed;
     };
 
-    ` Turn rate. 10 Å 30¡/sec.
+    ` Turn rate. 10 is 30deg/sec.
     field("TurnRate") {
         Maneuver;
     };
@@ -165,9 +165,9 @@
         FreeMass;
     };
 
-    ` Armour strength.
-    field("Armour") {
-        Armour;
+    ` Armor strength.
+    field("Armor") {
+        Armor;
     };
 
     ` Shield recharge speed, in number of shield points x1000 per frame. Bigger
@@ -179,13 +179,13 @@
 
     ` Which stock weapons to put on your ship when you first buy it:
     field("StockWeapon") repeatable<1, 8> {
-        WeapType<$FieldNumber> as Weapon& [ None = #0 ];
-        WeapCount<$FieldNumber> [ None = 0 ];
+        WeapType<$FieldNumber> as Weapon& = None [ None = #0 ];
+        WeapCount<$FieldNumber> = None [ None = 0 ];
         AmmoLoad<$FieldNumber> = None [ None = 0 ];
     };
 
-    ` The next two fields tell Nova what this ship’s maximum load out of fixed 
-    ` guns and turreted weapons is. Each ship has an inherent upper limit on 
+    ` The next two fields tell Nova what this ship’s maximum load out of fixed
+    ` guns and turreted weapons is. Each ship has an inherent upper limit on
     ` fixed guns and turrets, in order to keep them from becoming absurdly
     ` powerful. (e.g. a bulk freighter has lots of room to add weapons, but is
     ` limited to a single turret for defence) The fields are:
@@ -202,7 +202,7 @@
         MaxTur;
     };
 
-    ` What the technology level of the ship is. This ship will be available at 
+    ` What the technology level of the ship is. This ship will be available at
     ` all shipyards with a tech level of this value or higher. (The exception to
     ` this rule involves the SpecialTech fields of the spöb resource; see the
     ` section on spöb resources for more information.)
@@ -219,16 +219,16 @@
     };
 
     ` The number of frames the ship "disintegrates" before finally exploding.
-    `   0-59    The ship disintegrates for this number of frames and then 
+    `   0-59    The ship disintegrates for this number of frames and then
     `           disappears in a single fireball.
-    `   60+     The ship disintegrates for this number of frames and then 
+    `   60+     The ship disintegrates for this number of frames and then
     `           disappears in a huge explosion. The exact size of the resulting
     `           fireball is proportional to the ship's mass. (see below)
     field("DeathDelay") {
         DeathDelay;
     };
 
-    ` Armour recharge speed, in number of armour points x1000 per frame. Bigger
+    ` Armor recharge speed, in number of armour points x1000 per frame. Bigger
     ` numbers here mean faster recharge - a value of 1000 is equal to 1 point
     ` per frame or 30 points per second.
     field("ArmorRecharge") {
@@ -237,8 +237,8 @@
 
     ` Ship Explosion
     field("Explosion") {
-        ` Type of explosion to show (0-63) while the ship is breaking up, or 
-        ` -1 to not show any explosions until the ship is finished being 
+        ` Type of explosion to show (0-63) while the ship is breaking up, or
+        ` -1 to not show any explosions until the ship is finished being
         ` destroyed.
         Explode1;
 
@@ -263,14 +263,14 @@
     ` ship explodes is proportional to its mass.
     `
     `   1-99        1 day per jump, small blip on density scanner.
-    `   100-199     2 days per jump, large blip on density scanner. 
+    `   100-199     2 days per jump, large blip on density scanner.
     `   200+        3 days per jump, large blip on density scanner.
     `
     field("Mass") {
         Mass;
     };
 
-    ` The ship's length in meters. Currently unused in any calculations, 
+    ` The ship's length in meters. Currently unused in any calculations,
     ` but it’s kinda cool, so it’s displayed in the "detailed ship info" dialog.
     field("Length") {
         Length;
@@ -281,7 +281,7 @@
     ` useful is when a ship is created as an escort ship; otherwise, it's
     ` ignored:
     field("AI") {
-        InherentAI as Range<1, 4> [
+        InherentAI [
             WimpyTrader = 1,
             BraveTrader = 2,
             Warship = 3,
@@ -306,16 +306,16 @@
     `
     `   Note that unlike previous EV games, Nova actually handles two inherent
     `   government associations for each ship type: an inherent combat govt
-    `   (used when an AI ship or stellar is deciding if it likes or hates 
-    `   another ship) and an inherent attributes govt (used for non-combat 
-    `   things like voice type, distress message flags, etc, as well as for 
-    `   inherent jamming ability). Sometimes you might want to create a ship 
-    `   type that inherits attributes from a particular govt but isn't 
-    `   considered to be inherently of that govt in combat, so Nova lets you 
+    `   (used when an AI ship or stellar is deciding if it likes or hates
+    `   another ship) and an inherent attributes govt (used for non-combat
+    `   things like voice type, distress message flags, etc, as well as for
+    `   inherent jamming ability). Sometimes you might want to create a ship
+    `   type that inherits attributes from a particular govt but isn't
+    `   considered to be inherently of that govt in combat, so Nova lets you
     `   use the InherentGovt field in several different ways.
     `
     field("Government") {
-        InherentGovt as Government&;
+        InherentGovt as Government& = None [ None = #-1 ];
     };
 
     ` Flags
@@ -365,7 +365,7 @@
         ];
     };
 
-    ` For decorative purposes, AI ships can be made to launch escape pods when 
+    ` For decorative purposes, AI ships can be made to launch escape pods when
     ` they're destroyed. This field contains the standard number of escape pods
     ` for an AI ship of this type to launch when destroyed, at a rate of one per
     ` second. Note that this has nothing to do with the përs field's escape pod
@@ -437,15 +437,15 @@
         IonizeMax;
     };
 
-    ` The key carried ship type, used for interesting effects in the wëap and 
+    ` The key carried ship type, used for interesting effects in the wëap and
     ` shän resources.
     field("KeyCarried") {
         KeyCarried;
     };
 
-    ` These two Contribute fields together form a 64-bit flag that is 
+    ` These two Contribute fields together form a 64-bit flag that is
     ` subsequently combined with the Contribute fields from the outfit items in
-    ` the player's possession, to be used with the Require fields in the outf 
+    ` the player's possession, to be used with the Require fields in the outf
     ` and misn resources.
     field("Contribute") {
         Contribute as Bitmask;
@@ -482,7 +482,7 @@
         OnCapture;
     };
 
-    ` Control bit set expression, evaluated when you sell a ship of this type 
+    ` Control bit set expression, evaluated when you sell a ship of this type
     `and/or replace it with a captured ship.
     field("OnRetire") {
         OnRetire;
@@ -550,3 +550,39 @@
 
 };
 
+@example declare Ship {
+    new(#128, "Example Ship") {
+        CargoCapacity = 100;
+        ShieldStrength = 50;
+        Acceleration = 400;
+        TopSpeed = 200;
+        TurnRate = 50;
+        FuelCapacity = 1000;
+        FreeMass = 50;
+        Armor = 200;
+        ShieldRecharge = 100;
+        StockWeapon = #128 2 0;
+        MaximumFixedGuns = 2;
+        MaximumTurrets = 2;
+        TechLevel = 1;
+        Cost = 100000;
+        DeathDelay = 30;
+        ArmorRecharge = 50;
+        Explosion = 2 1001;
+        DisplayWeight = 1;
+        Mass = 200;
+        Length = 150;
+        AI = BraveTrader;
+        CrewCount = 50;
+        RelativeStrength = 10;
+        Flags = ShowArmourPercentage | StandOff | DestroysAsteroids;
+        EscapePods = 1;
+        Deionize = 100;
+        MaximumIonization = 1000;
+        BuyRandom = 100%;
+        HireRandom = 0%;
+        ShortName = "Example";
+        CommName = "Example";
+        LongName = "A really interesting example ship";
+    };
+};

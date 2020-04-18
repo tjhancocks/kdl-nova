@@ -1,15 +1,15 @@
 ` Copyright (c) 2019-2020 Tom Hancocks
-` 
+`
 ` Permission is hereby granted, free of charge, to any person obtaining a copy
 ` of this software and associated documentation files (the "Software"), to deal
 ` in the Software without restriction, including without limitation the rights
 ` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 ` copies of the Software, and to permit persons to whom the Software is
 ` furnished to do so, subject to the following conditions:
-` 
+`
 ` The above copyright notice and this permission notice shall be included in all
 ` copies or substantial portions of the Software.
-` 
+`
 ` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 ` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 ` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,7 +18,7 @@
 ` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ` SOFTWARE.
 
-` Oops resources contain info on planetary disasters. Actually, the term 
+` Oops resources contain info on planetary disasters. Actually, the term
 ` 'disasters' is a misnomer, as these occurrences simply affect the price of a
 ` single commodity at a planet or station, for good or bad. Nova uses the name
 ` of the resource in the commodity exchange dialog box to indicate that a
@@ -63,7 +63,7 @@
             Equipment = 5
         ];
     };
-    
+
     ` How much to raise or lower the price. (negative numbers lower it).
     field("PriceChange") {
         PriceDelta;
@@ -76,11 +76,21 @@
 
     ` Percentage change per day that the disaster will occur.
     field("Chance") {
-        Freq as Range<0, 100>;
+        Freq as Range<0%, 100%>;
     };
 
     ` Control bit test expression.
     field("ActivateOn") {
         ActivateOn = "";
+    };
+};
+
+@example declare Disaster {
+    new(#128, "Volcanic eruption") {
+        StellarObject = AnyStellar;
+        Commodity = MedicalSupplies;
+        PriceChange = 100;
+        Duration = 30;
+        Chance = 5%;
     };
 };

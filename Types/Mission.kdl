@@ -105,7 +105,7 @@
     ` 30000-30255: Stellar of specific govt or any of its class mates
     ` 31000-31255: Stellar not of specific govt nor of any of its class mates
     field("AvailableStellar") {
-        AvailStel [ AnyInhabited = -1 ];
+        AvailStel = AnyInhabited [ AnyInhabited = -1 ];
     };
 
     ` Where on a planet this mission is available
@@ -144,7 +144,7 @@
 
     ` What your combat rating must be for this mission to be available
     field("AvailableRating") {
-        AvailRating [ Ignored = -1 ];
+        AvailRating = Ignored [ Ignored = -1 ];
     };
 
     ` A randomization factor, to ensure that some missions aren't available all
@@ -266,7 +266,7 @@
     ` ScanMask field, that govt will consider this mission's cargo illegal. Set
     ` to zero if unused.
     field("ScanMask") {
-        ScanMask = 0;
+        ScanMask as Bitmask;
     };
 
     ` What you get if you're successful and you return to ReturnStel.
@@ -513,7 +513,7 @@
 
     ` Some misc. flag bits
     field("Flags") {
-        Flags = 0 [
+        Flags as Bitmask [
             ` Marks the mission as an auto-aborting mission, which will
             ` automatically abort itself after it is accepted. (sometimes useful
             ` to create special ships) Any control bits pointed to by the
@@ -579,7 +579,7 @@
             ` Mission will fail if player is boarded by pirates.
             FailIfBoardedByPirates = 0x8000
         ];
-        Flags2 = 0 [
+        Flags2 as Bitmask [
             ` Don't offer mission if the player doesn't have enough cargo space
             ` to hold the mission cargo (even if the mission cargo won't be
             ` picked up until later).
@@ -740,4 +740,21 @@
     ` player-info dialog and the word "the" is omitted in the message that
     ` appears when the player retrieves that type of cargo from a ship as part
     ` of a mission. This is useful for when the mission cargo is a proper name.
+};
+
+@example declare Mission {
+    new(#128, "Example Mission") {
+        AvailableStellar = AnyInhabited;
+        AvailableLocation = MissionComputer;
+        AvailableChance = 10%;
+        TravelStellar = NoDestination;
+        ReturnStellar = RandomInhabited;
+        Cargo = 1000 -10;
+        PickupMode = PickupAtStart;
+        DropoffMode = DropoffAtReturnStellar;
+        PayValue = 5000;
+        Flags = ShowGreenArrow | DontOfferIfInsufficientSpace;
+        CanAbort = Yes;
+        DisplayWeight = 10;
+    };
 };

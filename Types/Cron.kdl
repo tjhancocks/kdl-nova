@@ -133,7 +133,7 @@
     };
 
     field("Flags") {
-        Flags as Bitmask [
+        Flags as Bitmask = 0 [
             ` Continuous, iterative cron entry - keep evaluating the cron's
             ` OnStart field until the EnableOn expression is no longer true or
             ` the constraints of the Require fields are no longer met. This can
@@ -196,5 +196,15 @@
     field("News") repeatable<1, 4> {
         NewsGovt<$FieldNumber> as Government& = #-1;
         GovtNewsStr<$FieldNumber> = -1;
+    };
+};
+
+@example declare Cron {
+    new(#128, "Example Event") {
+        FirstDate = 01 01 3100;
+        LastDate = 31 12 3100;
+        Random = 50%;
+        Duration = 7;
+        Flags = ContinuousExit | ContinuousEntry;
     };
 };

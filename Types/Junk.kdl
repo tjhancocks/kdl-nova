@@ -51,13 +51,13 @@
     ` ID number of the stellar object where the commodity is sold. Set to 0 or
     ` -1 if unused.
     field("SoldAtStellar") repeatable<1, 8> {
-        SoldAt<$FieldNumber> as StellarObject& = #-1;
+        SoldAt<$FieldNumber> as StellarObject& = None [ None = #-1 ];
     };
 
     ` ID number of the stellar object where the commodity is purchased. Set to
     ` 0 or -1 if unused.
     field("BoughtAtStellar") repeatable<1, 8> {
-        BoughtAt<$FieldNumber> as StellarObject& = #-1;
+        BoughtAt<$FieldNumber> as StellarObject& = None [ None = #-1];
     };
 
     ` The average price of the commodity (works much like the base prices for
@@ -68,7 +68,7 @@
 
     ` Misc flag bits.
     field("Flags") {
-        Flags as Bitmask = 0 [
+        Flags as Bitmask [
             ` Tribbles flag - When in your cargo bay, the commodity multiplies
             ` like tribbles.
             Tribbles = 0x0001,
@@ -85,7 +85,7 @@
     ` ScanMask field, that government will consider that junk cargo type
     ` illegal. Set to zero if unused.
     field("ScanMask") {
-        ScanMask as Bitmask = 0;
+        ScanMask as Bitmask;
     };
 
     ` The lower-case string to display in the player-info dialog box, among
@@ -102,13 +102,24 @@
 
     ` Control bit test expression. This jünk will only be available to be bought
     ` when this expression evaluates true. Leave blank if unused.
-    field("BuyOnExpression") {
-        BuyOn;
+    field("BuyOn") {
+        BuyOn = "";
     };
 
     ` Control bit test expression. This jünk will only be able to be sold when
     ` this expression evaluates true. Leave blank if unused.
-    field("SellOnExpression") {
-        SellOn;
+    field("SellOn") {
+        SellOn = "";
+    };
+};
+
+@example declare Junk {
+    new(#1000, "Tribbles") {
+        SoldAtStellar = None;
+        BoughtAtStellar = #128;
+        BasePrice = 200;
+        Flags = Tribbles;
+        LowercaseName = "tribbles";
+        Abbreviation = "Trib";
     };
 };

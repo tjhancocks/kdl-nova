@@ -122,7 +122,7 @@
 
     ` The next fields store the hyperspace links to up to 16 other systems:
     field("HyperspaceLinks") repeatable<1, 16> {
-        Con<$FieldNumber> as System& = #-1;
+        Con<$FieldNumber> as System& = None [ None = #-1 ];
     };
 
     ` The next fields store the stellar navigation defaults (F1-F4 for the first
@@ -132,14 +132,14 @@
     ` planet as a nav default, the AIs won't "see" it, it won't show up on the
     ` radar, and you can't select it.
     field("NavigationDefaults") repeatable<1, 16> {
-        Nav<$FieldNumber> as StellarObject& = #-1;
+        Nav<$FieldNumber> as StellarObject& = None [ None = #-1 ];
     };
 
     ` The next fields tell Nova how many ships, and of what kind, to put in the
     ` system: ID number of the ship class to place, and robability that a given
     ` ship placed is of the corresponding class.
     field("ShipClasses") repeatable<1, 8> {
-        DudeType<$FieldNumber> as ShipClass& = #-1;
+        DudeType<$FieldNumber> as ShipClass& = None [ None = #-1 ];
         DudeProb<$FieldNumber> as Range<0%, 100%> = 0%;
     };
 
@@ -150,7 +150,7 @@
 
     ` Which government owns the system.
     field("Government") {
-        Govt as Government& = #-1 [
+        Govt as Government& = Independent [
             Independent = #-1
         ];
     };
@@ -158,7 +158,7 @@
     ` Which message buoy string to display: if not -1, use this entry in STR#
     ` resource 1000 as the text of the message buoy.
     field("Message") {
-        Message = -1;
+        Message = None [ None = -1 ];
     };
 
     ` How many asteroids to put in the system, from 0 to 16.
@@ -175,14 +175,14 @@
     ` Want to make a ‘pers’ type ship always appear? Put its ID into one of the
     ` Person fields that appear at the end of the syst resource.
     field("Persons") repeatable<1, 8> {
-        Person<$FieldNumber> as Person& = #-1;
+        Person<$FieldNumber> as Person& = None [ None = #-1 ];
         PersProb<$FieldNumber> as Range<0%, 100%> = 0%;
     };
 
     ` The system's background color, encoded the same as HTML colours. (RRGGBB)
     ` ...set to zero for pure black.
     field("BackgroundColor") {
-        BkgndColor;
+        BkgndColor = 0;
     };
 
     ` The murkiness of the system (0-100). Zero will cause everything to appear
@@ -226,7 +226,7 @@
     ` fleet's government, the reinforcement fleet will be called in. Set to 0
     ` or -1 if unused.
     field("ReinforcementFleet") {
-        ReinfFleet as Fleet& = #-1;
+        ReinfFleet as Fleet& = None [ None = #-1 ];
     };
 
     ` The delay between the time the reinforcement call goes out and the time
@@ -241,5 +241,22 @@
     ` days for the reinforcement fleet to be available again.
     field("ReinforcementIntrval") {
         ReinfIntrval;
+    };
+};
+
+@example declare System {
+    new(#128, "Example System") {
+        Position = 50 50;
+        HyperspaceLinks = #129;
+        HyperspaceLinks = #130;
+        NavigationDefaults = #128;
+        ShipClasses = #128 50%;
+        ShipClasses = #129 10%;
+        AverageShipCount = 2;
+        Asteroids = 5;
+        Interference = 20%;
+        Persons = #128 5%;
+        Murk = 0;
+        AsteroidTypes = 0x0001;
     };
 };
