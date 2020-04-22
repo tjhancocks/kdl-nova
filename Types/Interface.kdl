@@ -1,0 +1,180 @@
+` Copyright (c) 2019-2020 Tom Hancocks
+`
+` Permission is hereby granted, free of charge, to any person obtaining a copy
+` of this software and associated documentation files (the "Software"), to deal
+` in the Software without restriction, including without limitation the rights
+` to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+` copies of the Software, and to permit persons to whom the Software is
+` furnished to do so, subject to the following conditions:
+`
+` The above copyright notice and this permission notice shall be included in all
+` copies or substantial portions of the Software.
+`
+` THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+` IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+` FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+` AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+` LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+` OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+` SOFTWARE.
+
+` The ïntf resource controls the appearance of the status bar by modifying the
+` position and colour of the various status bar elements, as well as changing
+` the status bar background image. Additionally, the use of multiple ïntf
+` resources, along with proper values in the various gövt resources' Interface
+` fields, allows the appearance of status bar to change based on what type of
+` ship the player is piloting - this is a useless but fairly neat effect.
+
+` Note that all colours in the ïntf resource are encoded the same as HTML
+` colours, and that vertical shield/armour/fuel bars are properly handled by the
+` game engine - to make an indicator bar vertical, set its height to be greater
+` than its width. Also note that setting any of the above rectangles to have
+` zero area (right=left, top=bottom) will cause the corresponding status
+` indicator to not be drawn.
+
+@type Interface : "ïntf" {
+    template {
+        HLNG BrightText;
+        HLNG DimText;
+        RECT RadarArea;
+        HLNG BrightRadar;
+        HLNG DimRadar;
+        RECT ShieldArea;
+        HLNG ShieldColor;
+        RECT ArmorArea;
+        HLNG ArmorColor;
+        RECT FuelArea;
+        HLNG FuelFull;
+        HLNG FuelPartial;
+        RECT NavArea;
+        RECT WeapArea;
+        RECT TargArea;
+        RECT CargoArea;
+        C040 StatusFont;
+        DWRD StatFontSize;
+        DWRD SubtitleSize;
+        DWRD StatusBkgnd;
+    };
+
+    ` Bright text colour.
+    field("BrightTextColor") {
+        BrightText;
+    };
+
+    ` Dim text colour.
+    field("DimTextColor") {
+        DimText;
+    };
+
+    ` Rectangular bounds of the radar display.
+    field("RadarArea") {
+        RadarArea;
+    };
+
+    ` Bright radar pixel colour.
+    field("BrightRadarColor") {
+        BrightRadar;
+    };
+
+    ` Dim radar pixel colour (note that having an IFF outfit will override these
+    ` colours).
+    field("DimRadarColor") {
+        DimRadar;
+    };
+
+    ` Rectangular bounds of the shield indicator.
+    field("ShieldArea") {
+        ShieldArea;
+    };
+
+    ` Shield bar colour.
+    field("ShieldColor") {
+        ShieldColor;
+    };
+
+    ` Rectangular bounds of the armour indicator.
+    field("ArmorArea") {
+        ArmorArea;
+    };
+
+    ` Armour bar colour.
+    field("ArmorColor") {
+        ArmorColor;
+    };
+
+    ` Rectangular bounds of the fuel indicator.
+    field("FuelArea") {
+        FuelArea;
+    };
+
+    ` Colour of the "full jumps" portion of the fuel indicator.
+    field("FuelFullColor") {
+        FuelFull;
+    };
+
+    ` Colour of the "partial fuel" portion of the fuel indicator.
+    field("FuelPartialColor") {
+        FuelPartial;
+    };
+
+    ` Rectangular bounds of the navigation display.
+    field("NavArea") {
+        NavArea;
+    };
+
+    ` Rectangular bounds of the weapon display.
+    field("WeaponArea") {
+        WeapArea;
+    };
+
+    ` Rectangular bounds of the target display.
+    field("TargetArea") {
+        TargArea;
+    };
+
+    ` Rectangular bounds of the cargo display.
+    field("CargoArea") {
+        CargoArea;
+    };
+
+    ` Font to use for the status bar.
+    field("StatusFont") {
+        StatFontSize;
+        StatusFont;
+    };
+
+    ` Font size for ship subtitles.
+    field("SubtitleSize") {
+        SubtitleSize;
+    };
+
+    ` ID of PICT resource to use as backdrop for status display. Values less
+    ` than 128 are interpreted as 128.
+    field("StatusBackground") {
+        StatusBkgnd as Image<MacintoshPicture>& = #-1;
+    };
+};
+
+@example declare Interface {
+    new(#128, "Default interface") {
+        BrightTextColor = 0x00ff00;
+        DimTextColor = 0x007700;
+        RadarArea = 5 4 189 188;
+        BrightRadarColor = 0x00ff00;
+        DimRadarColor = 0x007700;
+        ShieldArea = 59 204 184 210;
+        ShieldColor = 0x00ff00;
+        ArmorArea = 59 218 184 224;
+        ArmorColor = 0x00ff00;
+        FuelArea = 59 237 184 243;
+        FuelFullColor = 0x00ff00;
+        FuelPartialColor = 0x007700;
+        NavArea = 6 259 188 293;
+        WeaponArea = 6 304 188 320;
+        TargetArea = 5 330 192 445;
+        CargoArea = 6 456 188 541;
+        StatusFont = 14 "Comic Sans";
+        SubtitleSize = 12;
+        StatusBackground = #128;
+    };
+};
