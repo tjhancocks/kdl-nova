@@ -109,7 +109,7 @@
             ` up (1000 = one more shield point per frame)
             ShieldRecharge = 5,
 
-            ` Item is armor, ModVal is the number of armour points to add
+            ` Item is armor, ModVal is the number of armor points to add
             Armor = 6,
 
             ` Item boosts acceleration, ModVal is the amount of accel to add
@@ -213,7 +213,7 @@
             MurkModifier = 28,
 
             ` Item increases armor recharge, ModVal is how much to speed up
-            ` (1000 = one more armour point per frame).
+            ` (1000 = one more armor point per frame).
             ArmorRecharge = 29,
 
             ` Item detects cloaked ships, ModVal is a bitfield:
@@ -451,7 +451,7 @@
     ` purchase on a given day, from 1-100. Values less than 1 or greater than
     ` 100 are interpreted as 100.
     field("AvailabilityChance") {
-        BuyRandom as Range<1%, 100%> = 100%;
+        BuyRandom as Range<0%, 100%> = 100%;
     };
 
     ` Which governments the outfit item's Require bits pertain to:

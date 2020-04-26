@@ -98,7 +98,7 @@
     ` The percent chance that the cron event will be activated during the date
     ` range defined above. Set to 100 for the event to be activated as soon as
     ` it can be.
-    field("Random") {
+    field("Chance") {
         Random as Range<0%, 100%>;
     };
 
@@ -128,8 +128,8 @@
     ` displayed in the news dialog while this cron event is in progress, if it
     ` doesn't have any applicable local news. Set to -1 for no independent
     ` news.
-    field("IndNewsStr") {
-        IndNewsStr = -1;
+    field("IndependentNews") {
+        IndNewsStr as StringList& = None [ None = #-1 ];
     };
 
     field("Flags") {
@@ -171,7 +171,7 @@
     ` from the player's ship and the other outfit items in the player's
     ` possession, to be used with the Require fields in the outf and misn
     ` resources.
-    field("Contrib") {
+    field("ContributeBits") {
         Contrib1 = 0;
         Contrib2 = 0;
     };
@@ -181,7 +181,7 @@
     ` outfit items. Unless for each 1 bit in the Require fields there is a
     ` matching 1 bit in one or more of the Contribute fields, the cron will not
     ` be activated. Leave these set to zero if unused.
-    field("Require") {
+    field("RequireBits") {
         Require1 = 0;
         Require2 = 0;
     };
@@ -195,7 +195,7 @@
     ` NewsGovt and GovtNewsStr fields to -1.
     field("News") repeatable<1, 4> {
         NewsGovt<$FieldNumber> as Government& = #-1;
-        GovtNewsStr<$FieldNumber> = -1;
+        GovtNewsStr<$FieldNumber> as StringList& = #-1;
     };
 };
 
@@ -203,7 +203,7 @@
     new(#128, "Example Event") {
         FirstDate = 01 01 3100;
         LastDate = 31 12 3100;
-        Random = 50%;
+        Chance = 50%;
         Duration = 7;
         Flags = ContinuousExit | ContinuousEntry;
     };

@@ -47,7 +47,7 @@
     ` Asteroid resources must have an ID of #128 to #143.
     assert($id >= #128, $id <= #143);
 
-    ` The strength of this asteroid type - this is equivalent to armour values
+    ` The strength of this asteroid type - this is equivalent to armor values
     ` for ships.
     field("Strength") {
         Strength;
@@ -64,13 +64,13 @@
     ` 0-5 This type of standard cargo.
     ` 1000-1127 This type of jünk resource.
     field("YieldType") {
-        YieldType as Junk& [
-            Food = #0,
-            Industrial = #1,
-            MedicalSupplies = #2,
-            LuxuryGoods = #3,
-            Metal = #4,
-            Equipment = #5
+        YieldType [
+            Food = 0,
+            Industrial = 1,
+            MedicalSupplies = 2,
+            LuxuryGoods = 3,
+            Metal = 4,
+            Equipment = 5
         ];
     };
 

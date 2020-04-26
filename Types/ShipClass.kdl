@@ -33,7 +33,7 @@
         DWRD AIType;
         DWRD Govt;
         HWRD Flags;
-        DWRD InfoTypes;
+        HWRD InfoTypes;
         DWRD ShipType1;
         DWRD ShipType2;
         DWRD ShipType3;

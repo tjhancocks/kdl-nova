@@ -101,14 +101,14 @@
     ` The person's aggression, i.e. how close ships have to be before the person
     ` will attack them, on a scale of 1 (close) to 3 (far).
     field("Aggression") {
-        Aggress as Range<1, 3>;
+        Aggress as Range<1, 4>;
     };
 
     ` At what percent of total shield capacity will the person run away from a
     ` fight? e.g. a value of 25 would cause the person to retreat when his
     ` shields dropped to 25%.
     field("Coward") {
-        Coward as Range<0%, 100%>;
+        Coward as Range<-1%, 100%> = -1% [ NeverFlees = -1% ];
     };
 
     ` ID number of the person's ship class.
@@ -138,7 +138,7 @@
     ` Similarly, a value of 70 would make their shields 30% weaker. A value less
     ` than zero makes this person invincible.
     field("ShieldMod") {
-        ShieldMod;
+        ShieldMod = 100;
     };
 
     ` ID number of a PICT resource to be displayed in the communications dialog
@@ -150,17 +150,17 @@
     ` Index number of an entry in STR# resource 7100, to be displayed in the
     ` communications dialog.
     field("CommQuote") {
-        CommQuote;
+        CommQuote = None [ None = -1 ];
     };
 
-    ` ndex number of an entry in STR# resource 7101, to be displayed at the
+    ` Index number of an entry in STR# resource 7101, to be displayed at the
     ` bottom of the game screen (i.e. over the radio).
     field("HailQuote") {
-        HailQuote;
+        HailQuote = None [ None = -1 ];
     };
 
     ` What mission to activate when the ship is boarded or hailed.
-    field("LinkMission") {
+    field("LinkedMission") {
         LinkMission as Mission& = None [ None = #-1 ];
     };
 

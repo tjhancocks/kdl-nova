@@ -170,7 +170,7 @@
     ` 31000-31255: Random stellar not of specific govt nor of any of its class
     `              mates
     field("TravelStellar") {
-        TravelStel [
+        TravelStel = NoDestination [
             NoDestination = -1,
             RandomInhabited = -2,
             RandomUninhabited = -3
@@ -194,7 +194,7 @@
     ` 31000-31255: Random stellar not of specific govt nor of any of its class
     `              mates
     field("ReturnStellar") {
-        ReturnStel  [
+        ReturnStel = NoDestination [
             NoDestination = -1,
             RandomInhabited = -2,
             RandomUninhabited = -3,
@@ -229,17 +229,17 @@
     ` 0 and up: this many tons of cargo
     ` -2 and below: abs(CargoQty) tons, +/- 50%
     field("Cargo") {
-        CargoType [
+        CargoType = NoCargo [
             NoCargo = -1,
             RandomStandardCargo = 1000
         ];
 
-        CargoQty [ Ignored = -1 ];
+        CargoQty = Ignored [ Ignored = -1 ];
     };
 
     ` Where the cargo is to be picked up.
     field("PickupMode") {
-        PickupMode [
+        PickupMode = Ignored [
             Ignored = -1,
             PickupAtStart = 0,
             PickupAtTravelStellar = 1,
@@ -254,7 +254,7 @@
     ` Don't set your cargo to be picked up and dropped off at the same place, as
     ` it may cause Nova to behave strangely.
     field("DropoffMode") {
-        DropoffMode [
+        DropoffMode = Ignored [
             Ignored = -1,
             DropoffAtTravelStellar = 0,
             DropoffAtReturnStellar = 1
@@ -322,7 +322,7 @@
 
     ` The mission goal associated with the special ships
     field("SpecialShipGoal") {
-        ShipGoal [
+        ShipGoal = NoGoal [
             ` Ignored (no specific goal for the special ships)
             NoGoal = -1,
 
@@ -357,7 +357,7 @@
 
     ` Defines any special actions you want the ships to take.
     field("SpecialShipBehavior") {
-        ShipBehav [
+        ShipBehav = Standard [
             ` Ignored (they use their standard AI routines).
             Standard = -1,
 
@@ -375,8 +375,8 @@
     ` Tells Nova how to name the special ships.
     ` -1: Ignored (special ships have normal names).
     ` 128 and up: Pick a name from this STR# resource.
-    field("SpecialShipNameID") {
-        ShipNameID [ Ignored = -1 ];
+    field("SpecialShipName") {
+        ShipNameID as StringList& = Ignored [ Ignored = #-1 ];
     };
 
     ` Defines where in the system the ships will start.
@@ -421,51 +421,51 @@
     ` Tells Nova which subtitle, if any, to use for the special ships.
     ` -1: Ignored (special ships have normal subtitles).
     ` 128 and up: Pick a subtitle from this STR# resource.
-    field("ShipSubtitle") {
-        ShipSubtitle [ Ignored = -1 ];
+    field("SpecialShipSubtitle") {
+        ShipSubtitle as StringList& = Ignored [ Ignored = #-1 ];
     };
 
     ` The desc to show in the dialog that comes up when you accept a mission.
     ` (formats are the same for all seven fields).
     field("BriefText") {
-        BriefText as Description& [ Ignored = #-1 ];
+        BriefText as Description& = Ignored [ Ignored = #-1 ];
     };
 
     ` The desc to show when the user hits the "Mission Briefing" (I) key.
     field("QuickBriefText") {
-        QuickBrief as Description& [ Ignored = #-1 ];
+        QuickBrief as Description& = Ignored [ Ignored = #-1 ];
     };
 
     ` The desc to show when special mission cargo is loaded from a planet.
     field("LoadCargoText") {
-        LoadCargText as Description& [ Ignored = #-1 ];
+        LoadCargText as Description& = Ignored [ Ignored = #-1 ];
     };
 
     ` The desc to show when special mission cargo is offloaded
     field("DropoffCargoText") {
-        DropCargText as Description& [ Ignored = #-1 ];
+        DropCargText as Description& = Ignored [ Ignored = #-1 ];
     };
 
     ` The desc to show when you go to ReturnStel and the mission has been
     ` successful.
     field("CompletionText") {
-        CompText as Description& [ Ignored = #-1 ];
+        CompText as Description& = Ignored [ Ignored = #-1 ];
     };
 
     ` The desc to show when you go to ReturnStel and the mission has been a
     ` failure.
     field("FailureText") {
-        FailText as Description& [ Ignored = #-1 ];
+        FailText as Description& = Ignored [ Ignored = #-1 ];
     };
 
     ` Mission time limit
     field("TimeLimit") {
-        TimeLimit [ Ignored = -1 ];
+        TimeLimit = Ignored [ Ignored = -1 ];
     };
 
     ` Whether or not the player can abort the mission
     field("CanAbort") {
-        CanAbort [
+        CanAbort = Yes [
             No = 0,
             Yes = 1
         ];
@@ -473,7 +473,7 @@
 
     ` The desc to show when you complete the special ship goal.
     field("SpecialShipDoneText") {
-        ShipDoneText as Description& [ Ignored = #-1 ];
+        ShipDoneText as Description& = Ignored [ Ignored = #-1 ];
     };
 
     ` The next few fields tell Nova about any auxiliary ships you want to be
@@ -484,7 +484,7 @@
 
     ` How many aux ships, if any, to activate for this mission:
     field("AuxShipCount") {
-        AuxShipCount as Range<-1, 31> [ NoShips = -1 ];
+        AuxShipCount as Range<-1, 31> = -1 [ NoShips = -1 ];
     };
 
     field("AuxShipClass") {
@@ -596,7 +596,7 @@
     ` The desc, if any, to show when mission offered in a bar or from a passing
     ` ship is refused.
     field("RefuseText") {
-        RefuseText as Description& [ Ignored = #-1 ];
+        RefuseText as Description& = Ignored [ Ignored = #-1 ];
     };
 
     ` Defines what class of ship you must have for this mission to be made
@@ -607,7 +607,7 @@
     ` 2128-2255: Must be flying a ship of this inherent govt.
     ` 3128-3255: Must not be flying a ship of this inherent govt.
     field("AvailableShipType") {
-        AvailShipTyp [ Ignored = -1 ];
+        AvailShipTyp = Ignored [ Ignored = -1 ];
     };
 
     ` A control bit test expression that determines the mission's availability.
@@ -681,7 +681,7 @@
     ` dialog, for missions that can be refused. If no text is entered here,
     ` Nova will use the "No" button label from STR# 150.
     field("RefuseButton") {
-        RefuseButton;
+        RefuseButton = "";
     };
 
     ` Controls the order that the mission is presented in the bar and mission
