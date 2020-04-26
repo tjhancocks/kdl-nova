@@ -188,7 +188,7 @@
     ` -1000 and below: Weapon uses abs(AmmoType+1000)/10 units of fuel per shot.
     `                  (example: - 1005 = 0.5 units per shot).
     field("AmmoType") {
-        AmmoType [
+        AmmoType = Unlimited [
             Unlimited = -1,
             ShipDestroyedWhenFired = -999
         ];
