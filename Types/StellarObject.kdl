@@ -256,7 +256,7 @@
     ` the "working" animation. Set to 0 to have the engine use the first half
     ` of the frames for "opening/closing" and the second half for "working".
     field("CustomPictureID") {
-         CustPicID;
+         CustPicID as & = #0;
     };
 
     ` Which ambient sound to play.
@@ -265,7 +265,7 @@
     `  specify an exact angle, while any other value specifies a random
     ` direction.;
     field("CustomSoundID") {
-        CustSndID = None [ None = -1];
+        CustSndID as MacintoshSound& = None [ None = #-1];
     };
 
     ` Which ship class to use for the defence fleet

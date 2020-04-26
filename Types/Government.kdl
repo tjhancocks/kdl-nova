@@ -377,7 +377,7 @@
     ` inherent attributes govt or inherent combat govt is equal to this govt
     ` type. Values less than 128 will be interpreted as 128.
     field("Interface") {
-        Interface;
+        Interface as Interface& = #128;
     };
 
     ` ID of a PICT resource to use as the background of the news window when the
@@ -385,7 +385,7 @@
     ` 128 are ignored and the standard independent/generic news background
     ` (ID 9000) is substituted instead.
     field("NewsPict") {
-        NewsPict;
+        NewsPict as MacintoshPicture& = #0;
     };
 };
 

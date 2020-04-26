@@ -133,8 +133,8 @@
     ` - The inherent transparency of the basic sprite images, from 0 (no
     `   transparency) to 32 (fully transparent).
     field("BaseImage") {
-        BaseImageID as Image<MacintoshPicture>&;
-        BaseMaskID  as Image<MacintoshPicture>& = #0;
+        BaseImageID as &;
+        BaseMaskID  as & = #0;
         BaseSetCount;
         BaseXSize;
         BaseYSize;
@@ -150,8 +150,8 @@
     ` - The number of sprite sets for the alternating sprites.
     ` - The X and Y size of the alternating sprite image
     field("AlternatingImage") {
-        AltImageID as Image<MacintoshPicture>& = #0;
-        AltMaskID as Image<MacintoshPicture>& = #0;
+        AltImageID as & = #0;
+        AltMaskID as & = #0;
         AltSetCount;
         AltXSize;
         AltYSize;
@@ -164,8 +164,8 @@
     ` TODO: these seem under-documented in the EVN Bible; expand this
     ` section to explain how these work in practice
     field("GlowImage") {
-        GlowImageID as Image<MacintoshPicture>& = #0;
-        GlowMaskID as Image<MacintoshPicture>& = #0;
+        GlowImageID as & = #0;
+        GlowMaskID as & = #0;
         GlowXSize;
         GlowYSize;
     };
@@ -177,8 +177,8 @@
     ` TODO: these seem under-documented in the EVN Bible; expand this
     ` section to explain how these work in practice
     field("LightImage") {
-        LightImageID as Image<MacintoshPicture>& = #0;
-        LightMaskID as Image<MacintoshPicture>& = #0;
+        LightImageID as & = #0;
+        LightMaskID as & = #0;
         LightXSize;
         LightYSize;
     };
@@ -190,8 +190,8 @@
     ` TODO: these seem under-documented in the EVN Bible; expand this
     ` section to explain how these work in practice
     field("WeaponImage") {
-        WeapImageID as Image<MacintoshPicture>& = #0;
-        WeapMaskID as Image<MacintoshPicture>& = #0;
+        WeapImageID as & = #0;
+        WeapMaskID as & = #0;
         WeapXSize;
         WeapYSize;
     };
@@ -205,8 +205,8 @@
     ` TODO: these seem under-documented in the EVN Bible; expand this
     ` section to explain how these work in practice
     field("ShieldImage") {
-        ShieldImgID as Image<MacintoshPicture>& = #0;
-        ShieldMaskID as Image<MacintoshPicture>& = #0;
+        ShieldImgID as & = #0;
+        ShieldMaskID as & = #0;
         ShieldXSize;
         ShieldYSize;
     };

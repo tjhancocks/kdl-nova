@@ -104,7 +104,7 @@
     ` description text when it displays a mission dialog box (with the exception
     ` of the Mission Computer and Mission Info dialogs).
     field("Graphic") {
-    	Graphic as Image<MacintoshPicture>& = #0;
+    	Graphic as MacintoshPicture& = #0;
     };
 
     ` The name of a QuickTime movie file to display before the briefing dialog
