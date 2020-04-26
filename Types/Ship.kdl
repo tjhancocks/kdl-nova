@@ -228,7 +228,7 @@
         DeathDelay;
     };
 
-    ` Armor recharge speed, in number of armour points x1000 per frame. Bigger
+    ` Armor recharge speed, in number of armor points x1000 per frame. Bigger
     ` numbers here mean faster recharge - a value of 1000 is equal to 1 point
     ` per frame or 30 points per second.
     field("ArmorRecharge") {
@@ -325,11 +325,11 @@
             SemiFastJumping = 0x0002,
             FastJumping = 0x0004,
             PlayerFuelRegen = 0x0008,
-            DisabledArmour10 = 0x0010,
+            DisabledArmor10 = 0x0010,
             AdvancedCombatAfterBurner = 0x0020,
             AIAfterBurner = 0x0040,
-            ShowArmourPercentage = 0x0100,
-            NoArmourState = 0x0200,
+            ShowArmorPercentage = 0x0100,
+            NoArmorState = 0x0200,
             PlanetType = 0x0400,
             TurretBlindSpotFront = 0x1000,
             TurretBlindSpotSides = 0x2000,
@@ -348,16 +348,16 @@
             CloakOnBurstReload = 0x0100,
             CloakWhenRunning = 0x0200,
             CloakWhenJumping = 0x0400,
-            ClockWhenFlying = 0x0800,
-            CloakedUntilClose = 0x1000,
-            CloaksWhenDocking = 0x2000,
-            ClocksWhenAttacked = 0x4000
+            CloakWhenFlying = 0x0800,
+            CloakUntilClose = 0x1000,
+            CloakWhenDocking = 0x2000,
+            CloakWhenAttacked = 0x4000
         ];
         Flags3 as Bitmask [
             DestroysAsteroids = 0x0001,
             ScoopsAsteroidDebris = 0x0002,
             IgnoresGravity = 0x0010,
-            IgnoresDeadly = 0x0020,
+            IgnoresDeadlyStellars = 0x0020,
             TurretedShotsAbove = 0x0040,
             ShipyardAvailability = 0x0100,
             ShipyardRequireBits = 0x0200,
@@ -439,8 +439,8 @@
 
     ` The key carried ship type, used for interesting effects in the wëap and
     ` shän resources.
-    field("KeyCarried") {
-        KeyCarried;
+    field("KeyCarriedShip") {
+        KeyCarried as Ship& = None [ None = #-1 ];
     };
 
     ` These two Contribute fields together form a 64-bit flag that is
@@ -465,15 +465,15 @@
     ` The percent chance that a ship of this type will be available for purchase
     ` on a given day. A BuyRandom of 0 means this ship will never be made
     ` available for purchase.
-    field("BuyRandom") {
-        BuyRandom as Range<0%, 100%>;
+    field("BuyAvailabilityChance") {
+        BuyRandom as Range<0%, 100%> = 100%;
     };
 
     ` The percent chance that a ship of this type will be available for hire in
     ` the bar on a given day. A HireRandom of 0 means this ship will never be
     ` made available for hire.
-    field("HireRandom") {
-        HireRandom as Range<0%, 100%>;
+    field("HireAvailabilityChance") {
+        HireRandom as Range<0%, 100%> = 100%;
     };
 
     ` Control bit set expression, evaluated when you capture a ship of this
@@ -497,14 +497,14 @@
     ` the ship type that it can be upgraded to. Set to 0 or -1 if this ship
     ` class can't be upgraded.
     field("EscortUpgrade") {
-        UpgradeTo as Ship&;
-        EscUpgrdCost;
+        UpgradeTo as Ship& = None [ None = #-1 ];
+        EscUpgrdCost = 0;
     };
 
     ` The amount of cash the player gets for selling off a captured escort of
     ` this type. If you input a number that's less than or equal to zero here,
     ` Nova will default to 10% of the ship's original cost.
-    field("EscortSell") {
+    field("EscortSellValue") {
         EscSellValue;
     };
 
@@ -575,12 +575,12 @@
         AI = BraveTrader;
         CrewCount = 50;
         RelativeStrength = 10;
-        Flags = ShowArmourPercentage | StandOff | DestroysAsteroids;
+        Flags = ShowArmorPercentage | StandOff | DestroysAsteroids;
         EscapePods = 1;
         Deionize = 100;
         MaximumIonization = 1000;
-        BuyRandom = 100%;
-        HireRandom = 0%;
+        BuyAvailabilityChance = 100%;
+        HireAvailabilityChance = 0%;
         ShortName = "Example";
         CommName = "Example";
         LongName = "A really interesting example ship";

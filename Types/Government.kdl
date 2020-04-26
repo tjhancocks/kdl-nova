@@ -273,7 +273,7 @@
     ` that ships of this govt won't engage a group of enemies more than 3x
     ` stronger than them and their friends, etc.
     field("MaxOdds") {
-        MaxOdds;
+        MaxOdds = 32767;
     };
 
     ` Allows you to assign this govt to up to four different "classes", which
@@ -309,7 +309,7 @@
     ` whose pilots are more highly trained than the stock pilots, so they can
     ` gain extra speed and acceleration from their ships. Values in this field
     ` of less than 1 are ignored.
-    field("SkillMult") {
+    field("SkillMultiplier") {
         SkillMult = 100;
     };
 
@@ -348,8 +348,11 @@
 
     ` The government's inherent jamming ability for each of the four jamming
     ` types, from 0 to 100%.
-    field("InherentJamming") repeatable<1, 4> {
-        InhJam<$FieldNumber> as Range<0%, 100%> = 0%;
+    field("InherentJamming") {
+        InhJam1 as Range<0%, 100%> = 0%;
+        InhJam2 as Range<0%, 100%> = 0%;
+        InhJam3 as Range<0%, 100%> = 0%;
+        InhJam4 as Range<0%, 100%> = 0%;
     };
 
     ` The government's name in medium length, which is primarily used in the
@@ -377,7 +380,7 @@
     ` inherent attributes govt or inherent combat govt is equal to this govt
     ` type. Values less than 128 will be interpreted as 128.
     field("Interface") {
-        Interface as Interface& = #128;
+        Interface as Interface& = Default [ Default = #128 ];
     };
 
     ` ID of a PICT resource to use as the background of the news window when the
@@ -396,7 +399,7 @@
         MaxOdds = 200;
         CommName = "Pirates";
         TargetCode = "Pirate";
-        InherentJamming = 50%;
+        InherentJamming = 0% 50% 0% 0%;
         MediumName = "Pirate";
         Color = 0xFF0000;
         ShipColor = 0xFF0000;

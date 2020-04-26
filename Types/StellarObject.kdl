@@ -206,7 +206,7 @@
     ` The stellar's tribute payout when dominated. -1 or 0 pays 1000 x the
     ` tech level per day; a value above zero pays that many credits per day.
     field("Tribute") {
-        Tribute;
+        Tribute = Default [ Default = 0 ];
     };
 
     ` What the base tech level of the stellar is. Only items and ships with
@@ -256,7 +256,7 @@
     ` the "working" animation. Set to 0 to have the engine use the first half
     ` of the frames for "opening/closing" and the second half for "working".
     field("CustomPictureID") {
-         CustPicID as & = #0;
+         CustPicID = None [ None = 0];
     };
 
     ` Which ambient sound to play.
@@ -342,7 +342,7 @@
     ` The amount of combined mass and energy damage this stellar can take from
     ` planetary-type weapons before it is destroyed. Set this to 0 or -1 for an
     ` invincible stellar.
-    field("Strength") {
+    field("RelativeStrength") {
         Strength = Invincible [ Invincible = -1 ];
     };
 
@@ -356,9 +356,9 @@
     ` itself. Set this to 0 for a stellar that regenerates at the end of every
     ` day, or -1 for a stellar that never regenerates on its own.
     field("DeadTime") {
-        DeadTime [
+        DeadTime = NeverRegenerates [
             NeverRegenerates = -1,
-            RegeneratesDailiy = 0
+            RegeneratesDaily = 0
         ];
     };
 

@@ -108,14 +108,14 @@
     ` the beam will exist onscreen will be Count + 16 - CoronaFalloff, so adjust
     ` the Reload value accordingly to ensure that the universe doesn't get
     ` filled up with overlapping beams from a single ships.
-    field("Count") {
+    field("Lifetime") {
         Count;
     };
 
     ` The next two fields, MassDmg and EnergyDmg, tell Nova how much damage to
     ` do when one of this weapon's shots hits something. Energy damage does
-    ` damage to shields only, and mass damage does damage to armour only.
-    ` Further, if a ship has shields, its armour can't be damaged until its
+    ` damage to shields only, and mass damage does damage to armor only.
+    ` Further, if a ship has shields, its armor can't be damaged until its
     ` shields are knocked down (unless the weapon is a shield-penetrating
     ` weapon).
     field("MassDamage") {
@@ -128,7 +128,7 @@
 
     ` The weapon's guidance mode
     field("Guidance") {
-        Guidance [
+        Guidance = Unguided [
             ` Unguided projectile
             Unguided = -1,
 
@@ -161,11 +161,11 @@
 
             ` Point defence turret (fires automatically at incoming guided
             ` weapons and nearby ships)
-            PointDefenceTurret = 9,
+            PointDefenseTurret = 9,
 
             ` Point defence beam (fires automatically at incoming guided weapons
             ` and nearby ships)
-            PointDefenceBeam = 10,
+            PointDefenseBeam = 10,
 
             ` Carried ship (AmmoType is the ID of the ship class)
             CarriedShip = 99
@@ -196,7 +196,7 @@
 
     ` What graphic set to use for this weapon (from spin resources 3000-3255)
     field("Graphic") {
-        Graphic as Range<0, 255>;
+        Graphic as Range<-1, 255> = -1 [ None = -1 ];
     };
 
     ` The weapon's inaccuracy as it leaves the ship (ignored for guidance-10
@@ -231,7 +231,7 @@
     ` of type 0 around the primary explosion. Set to -1 to not show any
     ` explosion.
     field("ExplosionType") {
-         ExplodType as Range<-1, 1063> [
+         ExplodType as Range<-1, 1063> = -1 [
              ` -1 No explosion.
              NoExplosion = -1
          ];
@@ -412,7 +412,7 @@
     ` be any size, but if you use ResEdit's cicn editor to make each icon only
     ` as large as it needs to be, game performance will likely improve
     field("SmokeSet") {
-        SmokeSet;
+        SmokeSet = None [ None = -1 ];
     };
 
     ` How fast to decay each shot's power. -1 or 0 means ignored, 1 and up
@@ -470,7 +470,7 @@
     ` The corona falloff. Higher numbers make the corona fall off faster. This
     ` value must be between 2 and 16. (since lightning beams have no corona,
     ` this is ignored for lightning beams)
-    field("Falloff") {
+    field("BeamFalloff") {
         Falloff;
     };
 
@@ -497,12 +497,12 @@
     ` The resource ID of the weapon type to create as submunitions. Anything
     ` except beams and fighters is handled.
     field("SubmunitionType") {
-        SubType;
+        SubType as Weapon& = None [ None = #-1 ];
     };
 
     ` The angular error of the submunitions as they are launched, as expressed
     ` in degrees error from the carrier weapons' heading.
-    field("SubmunitionTheta") {
+    field("SubmunitionSpreadAngle") {
         SubTheta;
     };
 
@@ -594,8 +594,11 @@
 
     ` The weapon's vulnerability to the four different types of jamming, from 0
     ` to 100%. Ignored if the weapon is not a guided weapon.
-    field("JamVulnerability") repeatable<1, 4> {
-        JamVuln<$FieldNumber> as Range<0%, 100%> = 0%;
+    field("JamVulnerability") {
+        JamVuln1 as Range<0%, 100%> = 0%;
+        JamVuln2 as Range<0%, 100%> = 0%;
+        JamVuln3 as Range<0%, 100%> = 0%;
+        JamVuln4 as Range<0%, 100%> = 0%;
     };
 
     ` For guided weapons, this is how many point defence hits a shot from this
@@ -609,7 +612,7 @@
 
     ` For guided weapons, this is the turning speed of the weapon. Higher values
     ` yield more manoeuvrable missiles. Ignored for anything but guided weapons.
-    field("GuidedTurn") {
+    field("GuidedTurnRate") {
         GuidedTurn;
     };
 
@@ -618,7 +621,7 @@
     ` amount of ammo for that weapon type would actually be twice MaxAmmo, and
     ` so on) Set to 0 or -1 if you want the ammo quantity to be constrained by
     ` the oütf resource's Max field instead.
-    field("MaxAmmo") {
+    field("MaximumAmmo") {
         MaxAmmo;
     };
 
@@ -655,7 +658,7 @@
 @example declare Weapon {
     new(#128, "Example Laser") {
         Reload = 30;
-        Count = 30;
+        Lifetime = 30;
         MassDamage = 5;
         EnergyDamage = 6;
         Guidance = Unguided;
