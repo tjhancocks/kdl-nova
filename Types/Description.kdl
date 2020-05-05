@@ -96,7 +96,7 @@
     };
 
     field("Text") {
-    	Description;
+    	Description as File;
     };
 
     ` This is used to include graphics in mission briefings. If you put in the
