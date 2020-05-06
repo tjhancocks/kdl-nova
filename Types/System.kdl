@@ -232,7 +232,7 @@
     ` The delay between the time the reinforcement call goes out and the time
     ` the fleet appears. A value of 30 = one second.
     field("ReinforcementTime") {
-        ReinforcementTime;
+        Reinf;
     };
 
     ` The interval, in days, that it takes for the reinforcement fleet to be
