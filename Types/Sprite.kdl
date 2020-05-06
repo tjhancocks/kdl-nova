@@ -58,12 +58,12 @@
     ` ID number of the sprites' PICT resource (or the ID of the rleD/rle8
     ` resource).
     field("Sprites") {
-        SpritesID as Image<MacintoshPicture>&;
+        SpritesID as &;
     };
 
     ` ID number of the masks' PICT resource.
     field("Masks") {
-        MasksID as Image<MacintoshPicture>&;
+        MasksID as &;
     };
 
     ` Horizontal and vertical size of each sprite

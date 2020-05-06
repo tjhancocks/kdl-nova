@@ -89,7 +89,7 @@
     ` colours. (00RRGGBB)
     field("Particles") {
         PartCount;
-        PartColor;
+        PartColor as Color;
     };
 
     ` Asteroids can break up into some number of sub-asteroids when destroyed.

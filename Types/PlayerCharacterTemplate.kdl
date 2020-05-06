@@ -111,7 +111,7 @@
     ` starts out with a new pilot of this type. Set to -1 if unused.
     ` Maximum delay time to display each of the four above pictures, in seconds.
     field("AddIntroSequenceFrame") repeatable<1, 4> {
-        IntroPict<$FieldNumber> as Image<MacintoshPicture>& = #-1;
+        IntroPict<$FieldNumber> as MacintoshPicture& = #-1;
         PictDelay<$FieldNumber> = 5;
     };
 

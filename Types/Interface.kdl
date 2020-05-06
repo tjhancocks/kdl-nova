@@ -58,12 +58,12 @@
 
     ` Bright text colour.
     field("BrightTextColor") {
-        BrightText;
+        BrightText as Color;
     };
 
     ` Dim text colour.
     field("DimTextColor") {
-        DimText;
+        DimText as Color;
     };
 
     ` Rectangular bounds of the radar display.
@@ -73,13 +73,13 @@
 
     ` Bright radar pixel colour.
     field("BrightRadarColor") {
-        BrightRadar;
+        BrightRadar as Color;
     };
 
     ` Dim radar pixel colour (note that having an IFF outfit will override these
     ` colours).
     field("DimRadarColor") {
-        DimRadar;
+        DimRadar as Color;
     };
 
     ` Rectangular bounds of the shield indicator.
@@ -89,7 +89,7 @@
 
     ` Shield bar colour.
     field("ShieldColor") {
-        ShieldColor;
+        ShieldColor as Color;
     };
 
     ` Rectangular bounds of the armour indicator.
@@ -99,7 +99,7 @@
 
     ` Armour bar colour.
     field("ArmorColor") {
-        ArmorColor;
+        ArmorColor as Color;
     };
 
     ` Rectangular bounds of the fuel indicator.
@@ -109,12 +109,12 @@
 
     ` Colour of the "full jumps" portion of the fuel indicator.
     field("FuelFullColor") {
-        FuelFull;
+        FuelFull as Color;
     };
 
     ` Colour of the "partial fuel" portion of the fuel indicator.
     field("FuelPartialColor") {
-        FuelPartial;
+        FuelPartial as Color;
     };
 
     ` Rectangular bounds of the navigation display.
@@ -151,7 +151,7 @@
     ` ID of PICT resource to use as backdrop for status display. Values less
     ` than 128 are interpreted as 128.
     field("StatusBackground") {
-        StatusBkgnd as Image<MacintoshPicture>& = #-1;
+        StatusBkgnd as MacintoshPicture& = #-1;
     };
 };
 

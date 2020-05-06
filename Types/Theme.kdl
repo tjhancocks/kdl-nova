@@ -76,17 +76,17 @@
 
     ` Normal button text color.
     field("ButtonUpColor") {
-        ButtonUp;
+        ButtonUp as Color;
     };
 
     ` Pressed button text color.
     field("ButtonDownColor") {
-        ButtonDown;
+        ButtonDown as Color;
     };
 
     ` Greyed-out button text color.
     field("ButtonDisabledColor") {
-        ButtonGrey;
+        ButtonGrey as Color;
     };
 
     ` Main menu font size and name.
@@ -97,22 +97,22 @@
 
     ` Bright color for the main menu
     field("MenuColorBright") {
-        MenuColor1;
+        MenuColor1 as Color;
     };
 
     ` Dim color for the main menu
     field("MenuColorDim") {
-        MenuColor2;
+        MenuColor2 as Color;
     };
 
     ` Shipyard/outfit dialog selection square color.
     field("GridColorBright") {
-        GridBright;
+        GridBright as Color;
     };
 
     ` Shipyard/outfit dialog grid color.
     field("GridColorDim") {
-        GridDim;
+        GridDim as Color;
     };
 
     ` Position and shape of the loading progress bar, relative to the centre of
@@ -128,12 +128,12 @@
 
     ` Dim progress bar color .
     field("ProgressBarColorDim") {
-        ProgDim;
+        ProgDim as Color;
     };
 
     ` Progress bar outline color.
     field("ProgressBarColorOutline") {
-        ProgOutline;
+        ProgOutline as Color;
     };
 
     ` Position of the six main menu buttons, relative to the top left corner of
@@ -145,27 +145,27 @@
 
     ` Floating hyperspace map / escort menu border color.
     field("FloatingMapColor") {
-        FloatingMap;
+        FloatingMap as Color;
     };
 
     ` List text color.
     field("ListTextColor") {
-        ListText;
+        ListText as Color;
     };
 
     ` List background color.
     field("ListBackgroundColor") {
-        ListBkgnd;
+        ListBkgnd as Color;
     };
 
     ` List highlight color.
     field("ListHighlightColor") {
-        ListHilite;
+        ListHilite as Color;
     };
 
     ` Escort menu item highlight color
     field("EscortMenuHighlightColor") {
-        EscortHilite;
+        EscortHilite as Color;
     };
 
     ` Button font size and name.
@@ -195,8 +195,8 @@
 
 @example declare Theme {
     new(#128, "Example Theme") {
-        ButtonUpColor = 0xFF0000;
-        ButtonDownColor = 0x00FF00;
+        ButtonUpColor = rgb(255, 0, 0);
+        ButtonDownColor = rgb(0, 255, 0);
         ButtonDisabledColor = 0x0000FF;
         MenuFont = 12 "Arial";
         ProgressBarBounds = 20 20 120 30;

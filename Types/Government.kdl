@@ -364,7 +364,7 @@
     ` The government's theme colour, encoded the same as HTML colours.
     ` (00RRGGBB).
     field("Color") {
-        Color;
+        Color as Color;
     };
 
     ` The theme colour for this government's ships, encoded the same as HTML
@@ -373,7 +373,7 @@
     ` around all at once. Set to 00000000 if unused (which is the same as
     ` 00FFFFFF, or "pure white paint" i.e. no shading).
     field("ShipColor") {
-        ShipColor;
+        ShipColor as Color;
     };
 
     ` ID of an intf resource to use when the player is flying a ship whose

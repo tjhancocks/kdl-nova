@@ -144,7 +144,7 @@
     ` ID number of a PICT resource to be displayed in the communications dialog
     ` instead of the standard picture for this person's ship type.
     field("HailPicture") {
-        HailPict as Image<MacintoshPicture>& = None [ None = #-1 ];
+        HailPict as MacintoshPicture& = None [ None = #-1 ];
     };
 
     ` Index number of an entry in STR# resource 7100, to be displayed in the
@@ -268,7 +268,7 @@
     ` (00RRGGBB). Set to 00000000 if unused (which is the same as 00FFFFFF, or
     ` "pure white paint" i.e. no shading).
     field("Color") {
-        Color = 0;
+        Color as Color = 0;
     };
 };
 

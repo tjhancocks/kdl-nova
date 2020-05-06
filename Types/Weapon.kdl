@@ -450,7 +450,7 @@
 
     ` Particle base colour, encoded the same as HTML colours. (RRGGBB).
     field("ParticleColor") {
-        PartColor;
+        PartColor as Color;
     };
 
     ` The length of the beam created by this weapon, if applicable.
@@ -476,7 +476,7 @@
 
     ` The colour of the beam centre, encoded as a 24-bit RGB value (00RRGGBB).
     field("BeamColor") {
-        BeamColor;
+        BeamColor as Color;
     };
 
     ` The colour of the beam corona, encoded as a 24-bit RGB value. Note that
@@ -484,7 +484,7 @@
     ` bright atits maximum as what you specify in this field. (since lightning
     ` beams have no corona, this is ignored for lightning beams)
     field("CoronaColor") {
-        CoronaColor;
+        CoronaColor as Color;
     };
 
     ` The number of submunitions to create when the shot reaches the end of its
@@ -545,7 +545,7 @@
 
     ` The colour of the hit-particles, encoded as a 24-bit HTML colour (00RRGGBB)
     field("HitParticleColor") {
-        HitPartColor;
+        HitPartColor as Color;
     };
 
     ` The amount of recoil force to apply to the firing ship when this weapon is
@@ -651,7 +651,7 @@
     ` bright colours here is probably the best, as low-intensity colours tend
     ` to look odd when used as the ionization colour.
     field("IonizeColor") {
-        IonizeColor;
+        IonizeColor as Color;
     };
 };
 

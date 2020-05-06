@@ -182,7 +182,7 @@
     ` The system's background color, encoded the same as HTML colours. (RRGGBB)
     ` ...set to zero for pure black.
     field("BackgroundColor") {
-        BkgndColor = 0;
+        BkgndColor as Color = rgb(0, 0 ,0);
     };
 
     ` The murkiness of the system (0-100). Zero will cause everything to appear
